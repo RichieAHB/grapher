@@ -4,7 +4,9 @@ import Grapher from './Grapher';
 // as provided by math.js or KAS.
 export function graph(evaluate) {
   return (params) => {
-    const optionTypes = ['step'];
+
+    // Better way to do this!  Loop thorug className.
+    const optionTypes = ['step', 'startRange'];
     const singleTypes = ['grid', 'axis', 'scale'];
     const multiTypes = ['line', 'points'];
     const colors = [ '#9d4db8', '#8cb65a', '#4ca4f5', '#ff9900' ];
