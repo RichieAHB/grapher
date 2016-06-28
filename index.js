@@ -30,15 +30,16 @@ export function graph(evaluate) {
       const regex = new RegExp(`^(${multiTypes.join('|')})\\d*$`);
 
       if (~singleTypes.indexOf(key)) {
-        grapher[key]();
+        grapher.add(key);
       } else if (matches = key.match(regex)) {
         const type = matches[1];
 
         const formula = params[key];
         const expr = evaluate(formula);
 
-        grapher[type]({
-          color: colors[i % 4],
+        grapher.add(type, {
+          ...params,
+          color: colors[i % 4], // override colors for closed shorttag variant
           expr: expr,
         });
 

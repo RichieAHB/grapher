@@ -4,38 +4,39 @@ import Point from '../renderables/Point';
 
 export default class CanvasRenderer {
 
-  constructor(context) {
-
-    this.context = context;
+  constructor(wrapper) {
 
     const canvas = this.canvas = document.createElement('canvas');
     const ctx = this.ctx = canvas.getContext('2d');
 
-    context.events.listen('grapher:resize', () => {
-      this._translateToCenter();
-    });
-
-    context.wrapper.appendChild(canvas);
-  }
-
-  _translateToCenter() {
-    const {ctx, canvas, context} = this;
-    canvas.width = context.width;
-    canvas.height = context.height;
-    ctx.translate(Math.round(context.width / 2), Math.round(context.height / 2));
-  }
-
-  render(renderable) {
-    if (renderable instanceof Line) {
-      this._renderLine(renderable);
-    } else if (renderable instanceof Text) {
-      this._renderText(renderable);
-    } else if (renderable instanceof Point) {
-      this._renderPoint(renderable);
+    if (wrapper) {
+      wrapper.appendChild(canvas);
     }
   }
 
-  _renderLine(line) {
+  resize(width, height) {
+    const {ctx, canvas} = this;
+    canvas.width = width;
+    canvas.height = height;
+    ctx.translate(Math.round(width / 2), Math.round(height / 2));
+  }
+
+  render(renderable, scaleX = 50, scaleY = 50) {
+    if (renderable instanceof Line) {
+      this._renderLine(renderable, scaleX, scaleY);
+    } else if (renderable instanceof Text) {
+      this._renderText(renderable, scaleX, scaleY);
+    } else if (renderable instanceof Point) {
+      this._renderPoint(renderable, scaleX, scaleY);
+    }
+  }
+
+  getPixel(x, y) {
+    const data = this.ctx.getImageData(x, y, 1, 1).data;
+    return data;
+  }
+
+  _renderLine(line, scaleX, scaleY) {
 
     const {canvas, ctx} = this;
     const {points, settings} = line;
@@ -46,13 +47,13 @@ export default class CanvasRenderer {
       ctx.translate(.5, .5);
     }
 
-    const firstPoint = points[0].scale(50, -50);
+    const firstPoint = points[0].scale(scaleX, -scaleY);
 
     ctx.beginPath();
     ctx.moveTo(Math.round(firstPoint.x), Math.round(firstPoint.y));
 
     for (let i = 1; i < points.length; i++) {
-      const point = points[i].scale(50, -50);
+      const point = points[i].scale(scaleX, -scaleY);
       ctx.lineTo(Math.round(point.x), Math.round(point.y));
     }
 
@@ -66,13 +67,14 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderPoint(point) {
+  _renderPoint(point, scaleX, scaleY) {
+
     const {canvas, ctx} = this;
     const {points, settings} = point;
     const {size, color} = settings;
 
     for (let i = 0; i < points.length; i++) {
-      const _point = points[i].scale(50, -50);
+      const _point = points[i].scale(scaleX, -scaleY);
       ctx.beginPath();
       ctx.arc(Math.round(_point.x), Math.round(_point.y), size, 0, Math.PI * 2);
       ctx.fillStyle = color;
@@ -80,7 +82,7 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderText(text) {
+  _renderText(text, scaleX, scaleY) {
 
     const {canvas, ctx} = this;
     const {points, settings} = text;
@@ -88,7 +90,7 @@ export default class CanvasRenderer {
 
     for (let i = 0; i < points.length; i++) {
       let { point, text } = points[i];
-      point = point.scale(50, -50);
+      point = point.scale(scaleX, -scaleY);
 
       ctx.font = `${fontSize}px ${fontFamily}`;
       ctx.fillStyle = fontColor;
@@ -116,9 +118,5 @@ export default class CanvasRenderer {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
-  }
-
-  _unitToPixel(unit) {
-    return unit * 50;
   }
 }

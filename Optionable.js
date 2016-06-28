@@ -6,8 +6,6 @@ export default class Optionable {
 
     this.settings = {};
 
-    for (let type in optionTypes) {
-      this.settings[type] = options[type] || optionTypes[type];
-    }
+    this.settings = Object.assign({}, optionTypes, options);
   }
 }

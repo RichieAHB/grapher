@@ -1,57 +1,69 @@
 import Context from './Context';
-import Primitives from './primitives';
-
 import * as ScaleUtils from './utils/ScaleUtils';
 
 const _baseScaleFactor = 50;
+let id = 1;
 
 export default class Grapher {
 
   constructor(options = {}) {
     const settings = Object.assign({}, this.constructor.defaultOptions, options);
     this.context = new Context(settings);
-    this.primitives = [];
 
-    this._updateDimensions();
-    this._addAPI();
+    this.primitives = [];
+    this.buffers = [];
+    this.hovered = {
+      primitive: null,
+      elementIndex: null,
+    };
+
+    this._updateDimensions(true);
     this._addListeners();
 
-    this.draw();
+    this.frame();
   }
 
-  _addAPI() {
-    for (let type in Primitives) {
+  add(type, options) {
+    const primitive = this.context.primitiveFactory.make(type, options);
+    this.primitives.push(primitive);
+    this.primitives.sort((a, b) => {
+      return (a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1;
+    });
 
-      if (!Primitives.hasOwnProperty(type)) continue;
-
-      // Change the API to use lowercase
-      const _type = `${type.charAt(0).toLowerCase()}${type.substring(1)}`;
-
-      this.constructor.prototype[_type] = (options) => {
-
-        const primtive = this.context.primitiveFactory.make(type, options);
-        this._add(primtive);
-
-        return this;
-      };
+    if (!this.context.live) {
+      this.frame();
     }
-  }
 
-  _add(primtive) {
-    this.primitives.push(primtive);
+    return primitive;
   }
 
   _addListeners() {
-    this.context.wrapper.addEventListener('mousewheel', e => {
-      e.preventDefault();
-      this.zoom = Math.max(0.5, this.zoom + (e.deltaY / 10));
+    const {context} = this;
+    const {interactionRenderer, center, width, height, zoomEnabled} = context;
+
+    if (zoomEnabled) {
+      context.wrapper.addEventListener('mousewheel', e => {
+        e.preventDefault();
+        const {zoom} = this.context;
+        const _zoom = Math.min(10, Math.max(0.5, zoom + (e.deltaY / 10)));
+        this.context.zoom = _zoom;
+        this._updateDimensions();
+      });
+    }
+
+    context.wrapper.addEventListener('mousemove', ({offsetX, offsetY}) => {
+      context.mousePos.x = offsetX;
+      context.mousePos.y = offsetY;
+      const [pxX, pxY] = this._getPxPerUnit();
+      context.mouseCoord.x = ScaleUtils.pxToCoord(offsetX, width,  center.x, pxX);
+      context.mouseCoord.y = ScaleUtils.pxToCoord(offsetY, height, center.y, pxY);
     });
 
     window.addEventListener('resize', e => this._updateDimensions());
   }
 
-  _updateDimensions() {
-    const {wrapper, center, width, height} = this.context;
+  _updateDimensions(init = false) {
+    const {wrapper, startRange, center, width, height} = this.context;
     const hasWrapper = wrapper !== document.body;
 
     const oldWidth = width;
@@ -60,12 +72,12 @@ export default class Grapher {
     const newWidth  = this.context.width  = hasWrapper ? wrapper.offsetWidth  : window.innerWidth;
     const newHeight = this.context.height = hasWrapper ? wrapper.offsetHeight : window.innerHeight;
 
-    if (oldWidth !== newWidth || oldHeight !== newHeight) {
+    if (!startRange) {
 
-      const pxPerUnit = this._getPxPerUnit();
+      const [pxX, pxY] = this._getPxPerUnit();
 
-      const [minX, maxX] = ScaleUtils.getVisibleAxisRange(newWidth,  center.x, pxPerUnit);
-      const [minY, maxY] = ScaleUtils.getVisibleAxisRange(newHeight, center.y, pxPerUnit);
+      const [minX, maxX] = ScaleUtils.getVisibleAxisRange(newWidth,  center.x, pxX);
+      const [minY, maxY] = ScaleUtils.getVisibleAxisRange(newHeight, center.y, pxY);
 
       this.context.visibleAxisRange = {
         minX,
@@ -76,29 +88,140 @@ export default class Grapher {
 
       this.context.events.trigger('grapher:resize');
 
-      // TODO: Only rebuild if they require dimensions
-      this.primitives.forEach(primitive => primitive.make());
+    } else if (init) {
+      const [minX, maxX, minY, maxY] = startRange;
+
+      this.context.visibleAxisRange = {
+        minX,
+        maxX,
+        minY,
+        maxY,
+      };
+    }
+
+    if (!this.context.live) {
+      this.frame();
     }
   }
 
-  draw() {
-    const {renderer} = this.context;
+  frame() {
+    const {_primitives, primitives, context} = this;
+    const {renderer, interactionRenderer, width, height, mousePos} = context;
 
+    context.clock = Date.now();
+
+    renderer.resize(width, height);
     renderer.clear();
 
-    this.primitives.forEach(primitive => {
-      primitive.elements.forEach(el => renderer.render(el));
+    interactionRenderer.resize(width, height);
+
+    const oldHovered = this.hovered;
+    this.hovered = {
+      primitive: null,
+      elementIndex: null,
+    };
+
+    primitives.forEach(primitive => {
+
+      const {_id} = primitive;
+
+      primitive.elements.forEach((element, i) => {
+        const [pxX, pxY] = this._getPxPerUnit();
+
+        renderer.render(element, pxX, pxY);
+
+        // Hacky interaction check
+        // check in different way!
+        if (primitive.settings.mouseenter) {
+          const {settings} = element;
+          const {color} = settings;
+
+          settings.color = `rgba(${_id}, ${i}, 0, 1)`;
+          interactionRenderer.render(element);
+
+          const imgData = interactionRenderer.ctx.getImageData(mousePos.x, mousePos.y, 1, 1);
+
+          if (imgData.data[0]) {
+            this.hovered = {
+              primitive,
+              elementIndex: i,
+            };
+          }
+
+          interactionRenderer.clear();
+          settings.color = color;
+        }
+
+      });
     });
 
-    window.requestAnimationFrame(() =>  this.draw());
+    this._runInteractionEvents(oldHovered, this.hovered);
+
+    context.events.trigger('post');
+
+    // Should this always be going?
+    if (this.context.live) {
+      window.requestAnimationFrame(() =>  this.frame());
+    }
+  }
+
+  _runInteractionEvents(oldHovered, newHovered) {
+    const oldPrimitive    = oldHovered.primitive;
+    const oldElementIndex = oldHovered.elementIndex;
+    const newPrimitive    = newHovered.primitive;
+    const newElementIndex = newHovered.elementIndex;
+
+    if (newPrimitive) {
+      if (oldPrimitive != newPrimitive) {
+        document.body.style.cursor = "pointer";
+
+        newPrimitive.settings.mouseenter.call(
+          null,
+          newPrimitive.update.bind(newPrimitive),
+          newElementIndex
+        );
+      }
+    } else {
+      document.body.style.cursor = "auto";
+    }
+
+    if (
+      oldPrimitive
+      && newPrimitive !== oldPrimitive
+      && oldPrimitive.settings.mouseleave
+    ) {
+      oldPrimitive.settings.mouseleave.call(
+        null,
+        oldPrimitive.update.bind(oldPrimitive),
+        oldElementIndex
+      );
+    }
   }
 
   _getPxPerUnit() {
-    return this.context.zoom * _baseScaleFactor;
+    const {startRange, width, height, zoom} = this.context;
+
+    let minX;
+    let maxX;
+    let minY;
+    let maxY;
+
+    if (startRange) {
+      [minX, maxX, minY, maxY] = startRange;
+    } else {
+      const x = 10;
+      const y = 10 * (height / width);
+      [minX, maxX, minY, maxY] = [-x, x, -y, y];
+    }
+
+    return [width / (maxX - minX) * zoom, height / (maxY - minY) * zoom];
+    // return this.context.zoom * _baseScaleFactor;
   }
 }
 
 Grapher.defaultOptions = {
+  live: false,
+  startRange: false,
   wrapper: document.body,
-  step: 1,
+  zoomEnabled: false,
 };

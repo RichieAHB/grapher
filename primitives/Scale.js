@@ -41,4 +41,5 @@ export default class Scale extends Primitive {
 Scale.optionTypes = {
   strokeColor: '#ccc',
   strokeWidth: 1,
+  zIndex: 0,
 };

@@ -1,4 +1,4 @@
-import Primitives from './';
+import * as Primitives from './';
 
 export default class PrimitiveFactory {
   constructor(context) {
@@ -6,6 +6,7 @@ export default class PrimitiveFactory {
   }
 
   make(type, options) {
-    return new Primitives[type](this.context, options);
+    const _type = `${type.charAt(0).toUpperCase()}${type.substring(1)}`;
+    return new Primitives[_type](this.context, options);
   }
 }

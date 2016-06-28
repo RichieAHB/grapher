@@ -49,4 +49,5 @@ export default class Grid extends Primitive {
 Grid.optionTypes = {
   strokeColor: '#ccc',
   strokeWidth: 1,
+  zIndex: 0,
 };
