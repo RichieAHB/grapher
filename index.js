@@ -48,5 +48,6 @@ export function graph(evaluate) {
         i++;
       }
     }
+    return grapher;
   };
 }

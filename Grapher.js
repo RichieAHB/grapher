@@ -198,6 +198,10 @@ export default class Grapher {
     }
   }
 
+  destroy() {
+    this.context.renderer.canvas.remove();
+  }
+
   _getPxPerUnit() {
     const {startRange, width, height, zoom} = this.context;
 
