@@ -41,9 +41,9 @@ export default class CanvasRenderer {
 
     const {canvas, ctx} = this;
     const {points, settings} = line;
-    const {color, width} = settings;
+    const {color, lineWidth} = settings;
 
-    if (width % 2) {
+    if (lineWidth % 2) {
       ctx.save();
       ctx.translate(.5, .5);
     }
@@ -59,11 +59,11 @@ export default class CanvasRenderer {
     }
 
     ctx.strokeStyle = color;
-    ctx.lineWidth = width;
+    ctx.lineWidth = lineWidth;
 
     ctx.stroke();
 
-    if (width % 2) {
+    if (lineWidth % 2) {
       ctx.restore();
     }
   }
@@ -100,7 +100,7 @@ export default class CanvasRenderer {
       ctx.strokeStyle = outlineColor;
       ctx.lineWidth = outlineWidth * 2;
 
-      if (settings.strokeWidth % 2) {
+      if (settings.lineWidth % 2) {
         ctx.save();
         ctx.translate(.5, .5);
         ctx.strokeText(text, point.x, point.y);

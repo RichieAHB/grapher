@@ -7,14 +7,14 @@ export default class Line extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {color, strokeWidth, buffer} = settings;
+    const {color, lineWidth, buffer} = settings;
     const {data} = buffer._buffer;
 
     this.elements = [];
 
     const line = new _Line({
       color,
-      strokeWidth,
+      lineWidth,
     });
 
     // Could break if channels is set to anything other than 2!
@@ -31,5 +31,5 @@ Line.optionTypes = {
   mouseenter: false,
   mouseleave: false,
   buffer: false,
-  strokeWidth: 2,
+  lineWidth: 2,
 };

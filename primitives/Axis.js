@@ -7,14 +7,14 @@ export default class Axis extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, strokeWidth} = settings;
+    const {strokeColor, lineWidth} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     this.elements = [];
 
     const xAxis = new Line({
       color: strokeColor,
-      width: strokeWidth,
+      width: lineWidth,
     });
 
     xAxis.addPoint(new Vector2(0, minY));
@@ -24,7 +24,7 @@ export default class Axis extends Primitive {
 
     const yAxis = new Line({
       color: strokeColor,
-      width: strokeWidth,
+      width: lineWidth,
     });
 
     yAxis.addPoint(new Vector2(minX, 0));
@@ -36,5 +36,5 @@ export default class Axis extends Primitive {
 
 Axis.optionTypes = {
   strokeColor: '#555',
-  strokeWidth: 2,
+  lineWidth: 2,
 };
