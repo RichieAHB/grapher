@@ -22,7 +22,7 @@ export function graph(evaluate) {
 
     const grapher = new Grapher(options);
 
-    let i = 0;
+    let colorIndex = params.startColor || 0;
 
     for (let key in params) {
 
@@ -39,11 +39,9 @@ export function graph(evaluate) {
 
         grapher.add(type, {
           ...params,
-          color: colors[i % 4], // override colors for closed shorttag variant
+          color: colors[colorIndex++ % 4], // override colors for closed shorttag variant
           expr: expr,
         });
-
-        i++;
       }
     }
     return grapher;
