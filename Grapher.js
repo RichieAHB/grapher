@@ -128,7 +128,7 @@ export default class Grapher {
       primitive.elements.forEach((element, i) => {
         const [pxX, pxY] = this._getPxPerUnit();
 
-        renderer.render(element, pxX, pxY);
+        renderer.render(element, pxX, pxY, this.context.center);
 
         // Hacky interaction check
         // check in different way!

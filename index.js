@@ -6,7 +6,7 @@ export function graph(evaluate) {
   return (params) => {
 
     // Better way to do this!  Loop thorug className.
-    const optionTypes = ['step', 'startRange'];
+    const optionTypes = ['wrapper', 'step', 'startRange'];
     const singleTypes = ['grid', 'axis', 'scale'];
     const multiTypes = ['line', 'points'];
     const colors = [ '#9d4db8', '#8cb65a', '#4ca4f5', '#ff9900' ];
@@ -19,8 +19,6 @@ export function graph(evaluate) {
         options[option] = value;
       }
     });
-
-    options.wrapper = document.getElementById('graph-wrapper');
 
     const grapher = new Grapher(options);
 

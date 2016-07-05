@@ -1,3 +1,4 @@
+import Vector2 from '../math/Vector2';
 import Line from '../renderables/Line';
 import Text from '../renderables/Text';
 import Point from '../renderables/Point';
@@ -21,13 +22,13 @@ export default class CanvasRenderer {
     ctx.translate(Math.round(width / 2), Math.round(height / 2));
   }
 
-  render(renderable, scaleX = 50, scaleY = 50) {
+  render(renderable, scaleX = 50, scaleY = 50, center = new Vector2()) {
     if (renderable instanceof Line) {
-      this._renderLine(renderable, scaleX, scaleY);
+      this._renderLine(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Text) {
-      this._renderText(renderable, scaleX, scaleY);
+      this._renderText(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Point) {
-      this._renderPoint(renderable, scaleX, scaleY);
+      this._renderPoint(renderable, scaleX, scaleY, center);
     }
   }
 
@@ -36,7 +37,7 @@ export default class CanvasRenderer {
     return data;
   }
 
-  _renderLine(line, scaleX, scaleY) {
+  _renderLine(line, scaleX, scaleY, center) {
 
     const {canvas, ctx} = this;
     const {points, settings} = line;
@@ -47,13 +48,13 @@ export default class CanvasRenderer {
       ctx.translate(.5, .5);
     }
 
-    const firstPoint = points[0].scale(scaleX, -scaleY);
+    const firstPoint = points[0].subtract(center).scale(scaleX, -scaleY);
 
     ctx.beginPath();
     ctx.moveTo(Math.round(firstPoint.x), Math.round(firstPoint.y));
 
     for (let i = 1; i < points.length; i++) {
-      const point = points[i].scale(scaleX, -scaleY);
+      const point = points[i].subtract(center).scale(scaleX, -scaleY);
       ctx.lineTo(Math.round(point.x), Math.round(point.y));
     }
 
@@ -67,14 +68,14 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderPoint(point, scaleX, scaleY) {
+  _renderPoint(point, scaleX, scaleY, center) {
 
     const {canvas, ctx} = this;
     const {points, settings} = point;
     const {size, color} = settings;
 
     for (let i = 0; i < points.length; i++) {
-      const _point = points[i].scale(scaleX, -scaleY);
+      const _point = points[i].subtract(center).scale(scaleX, -scaleY);
       ctx.beginPath();
       ctx.arc(Math.round(_point.x), Math.round(_point.y), size, 0, Math.PI * 2);
       ctx.fillStyle = color;
@@ -82,7 +83,7 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderText(text, scaleX, scaleY) {
+  _renderText(text, scaleX, scaleY, center) {
 
     const {canvas, ctx} = this;
     const {points, settings} = text;
@@ -90,7 +91,7 @@ export default class CanvasRenderer {
 
     for (let i = 0; i < points.length; i++) {
       let { point, text } = points[i];
-      point = point.scale(scaleX, -scaleY);
+      point = point.subtract(center).scale(scaleX, -scaleY);
 
       ctx.font = `${fontSize}px ${fontFamily}`;
       ctx.fillStyle = fontColor;

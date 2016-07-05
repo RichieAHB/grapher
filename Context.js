@@ -2,6 +2,7 @@ import PrimitiveFactory from './primitives/PrimitiveFactory';
 import CanvasRenderer from './renderers/CanvasRenderer';
 import Vector2 from './math/Vector2';
 import EventEmitter from './EventEmitter';
+import * as ScaleUtils from './utils/ScaleUtils';
 
 export default class Context {
   constructor(options) {
@@ -11,8 +12,11 @@ export default class Context {
     this.zoomEnabled = options.zoomEnabled;
     this.live = options.live;
 
+    this.center = this.startRange ?
+        ScaleUtils.getCenterFromRange(this.startRange) :
+        new Vector2();
+
     this.zoom = 1;
-    this.center = new Vector2();
 
     this.events = new EventEmitter();
     this.primitiveFactory = new PrimitiveFactory(this);
