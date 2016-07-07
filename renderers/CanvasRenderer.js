@@ -2,6 +2,8 @@ import Vector2 from '../math/Vector2';
 import Line from '../renderables/Line';
 import Text from '../renderables/Text';
 import Point from '../renderables/Point';
+import Arrow from '../renderables/Arrow';
+import * as MathUtils from '../utils/MathUtils';
 
 export default class CanvasRenderer {
 
@@ -29,6 +31,8 @@ export default class CanvasRenderer {
       this._renderText(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Point) {
       this._renderPoint(renderable, scaleX, scaleY, center);
+    } else if (renderable instanceof Arrow) {
+      this._renderArrow(renderable, scaleX, scaleY, center);
     }
   }
 
@@ -110,6 +114,47 @@ export default class CanvasRenderer {
       }
 
       ctx.fillText(text, point.x, point.y);
+    }
+  }
+
+  _renderArrow(arrow, scaleX, scaleY, center) {
+    const {canvas, ctx} = this;
+    const {points, settings} = arrow;
+    const {color, rotation, size} = settings;
+
+    const _rotation = MathUtils.degToRad(rotation);
+
+    const xSize = size / scaleX;
+    const ySize = size / scaleY;
+
+    ctx.fillStyle = color;
+
+    for (let i = 0; i < points.length; i++) {
+      const tip = points[i];
+
+
+      const base1 = new Vector2(tip.x - (xSize / 2), tip.y - xSize);
+      const base2 = new Vector2(tip.x + (ySize / 2), tip.y - ySize);
+
+      const p1 = tip.subtract(center).scale(scaleX, -scaleY);
+
+      const p2 = base1
+        .rotateAround(tip, _rotation)
+        .subtract(center)
+        .scale(scaleX, -scaleY);
+
+      const p3 = base2
+        .rotateAround(tip, _rotation)
+        .subtract(center)
+        .scale(scaleX, -scaleY);
+
+      ctx.beginPath();
+      ctx.moveTo(Math.round(p1.x), Math.round(p1.y));
+      ctx.lineTo(Math.round(p2.x), Math.round(p2.y));
+      ctx.lineTo(Math.round(p3.x), Math.round(p3.y));
+      ctx.closePath();
+
+      ctx.fill();
     }
   }
 

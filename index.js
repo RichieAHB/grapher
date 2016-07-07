@@ -30,7 +30,7 @@ export function graph(evaluate) {
       const regex = new RegExp(`^(${multiTypes.join('|')})\\d*$`);
 
       if (~singleTypes.indexOf(key)) {
-        grapher.add(key);
+        grapher.add(key, params);
       } else if (matches = key.match(regex)) {
         const type = matches[1];
 

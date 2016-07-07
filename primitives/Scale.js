@@ -10,8 +10,11 @@ export default class Scale extends Primitive {
     const {strokeColor, lineWidth} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
-    const minXLine = Math.ceil(minX);
-    const maxXLine = Math.floor(maxX);
+    let minXLine = Math.ceil(minX);
+    let maxXLine = Math.floor(maxX);
+
+    minXLine += +(Math.round(minX) === minXLine);
+    maxXLine += -(Math.round(maxX) === maxXLine);
 
     this.elements = [];
 
@@ -24,8 +27,11 @@ export default class Scale extends Primitive {
       this.elements.push(text);
     }
 
-    const minYLine = Math.ceil(minY);
-    const maxYLine = Math.floor(maxY);
+    let minYLine = Math.ceil(minY);
+    let maxYLine = Math.floor(maxY);
+
+    minYLine += +(Math.round(minY) === minYLine);
+    maxYLine += -(Math.round(maxY) === maxYLine);
 
     for (let y = minYLine; y <= maxYLine; y++) {
 
