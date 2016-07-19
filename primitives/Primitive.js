@@ -11,7 +11,7 @@ export default class Primtive {
     this.context = context;
 
     // Allow the buffer options to be passed directly to the primitive
-    const optionTypes = Object.assign({}, this.constructor.optionTypes, bufferOptionTypes);
+    const optionTypes = Object.assign({ id: false }, this.constructor.optionTypes, bufferOptionTypes);
 
     this.settings = {};
 
@@ -19,12 +19,11 @@ export default class Primtive {
 
     // If there is no buffer (and the primitive needs one) then assume the
     // buffer options have been passed here, this may cause issues!
-
     if (this.constructor.optionTypes.hasOwnProperty('buffer') && !this.settings.buffer) {
       this.settings.buffer = this.context.primitiveFactory.make('Buffer', this.settings);
     }
 
-    this._id = id++;
+    this._id = this.settings.id || id++;
 
     this.events = new EventEmitter();
 
