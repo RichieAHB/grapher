@@ -9,37 +9,43 @@ export default class Axis extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, lineWidth, xLabel, yLabel, arrows} = settings;
+    const {strokeColor, lineWidth, showX, showY, xLabel, yLabel, arrows} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     this.elements = [];
 
-    const xAxis = new Line({
-      color: strokeColor,
-      width: lineWidth,
-    });
-
     const xAxisMax = new Vector2(maxX, 0);
-
-    xAxis.addPoint(new Vector2(minX, 0));
-    xAxis.addPoint(xAxisMax);
-
-    const yAxis = new Line({
-      color: strokeColor,
-      width: lineWidth,
-    });
-
     const yAxisMax = new Vector2(0, maxY);
 
-    yAxis.addPoint(new Vector2(0, minY));
-    yAxis.addPoint(yAxisMax);
+    if (showX) {
 
-    this.elements.push(
-      xAxis,
-      yAxis
-    );
+      const xAxis = new Line({
+        color: strokeColor,
+        width: lineWidth,
+      });
 
-    if (xLabel) {
+
+      xAxis.addPoint(new Vector2(minX, 0));
+      xAxis.addPoint(xAxisMax);
+
+      this.elements.push(xAxis);
+
+    }
+
+    if (showY) {
+
+      const yAxis = new Line({
+        color: strokeColor,
+        width: lineWidth,
+      });
+
+      yAxis.addPoint(new Vector2(0, minY));
+      yAxis.addPoint(yAxisMax);
+
+      this.elements.push(yAxis);
+    }
+
+    if (xLabel && showX) {
 
       const xAxisLabel = new Text({
         fontSize: 25,
@@ -50,7 +56,7 @@ export default class Axis extends Primitive {
       this.elements.push(xAxisLabel);
     }
 
-    if (yLabel) {
+    if (yLabel && showY) {
 
       const yAxisLabel = new Text({
         fontSize: 25,
@@ -87,6 +93,8 @@ export default class Axis extends Primitive {
 
 Axis.optionTypes = {
   arrows: false,
+  showX: true,
+  showY: true,
   strokeColor: '#555',
   xLabel: '𝑥',
   yLabel: '𝑦',

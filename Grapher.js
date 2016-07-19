@@ -23,6 +23,14 @@ export default class Grapher {
     this.frame();
   }
 
+  appendTo(node) {
+    node.appendChild(this.context.renderer.canvas);
+    this._removeWrapperListeners();
+    this.context.wrapper = node;
+    this._addWrapperListeners();
+    this._updateDimensions();
+  }
+
   add(type, options) {
     const primitive = this.context.primitiveFactory.make(type, options);
     this.primitives.push(primitive);
@@ -38,33 +46,52 @@ export default class Grapher {
   }
 
   _addListeners() {
-    const {context} = this;
-    const {interactionRenderer, center, width, height, zoomEnabled} = context;
-
-    if (zoomEnabled) {
-      context.wrapper.addEventListener('mousewheel', e => {
-        e.preventDefault();
-        const {zoom} = this.context;
-        const _zoom = Math.min(10, Math.max(0.5, zoom + (e.deltaY / 10)));
-        this.context.zoom = _zoom;
-        this._updateDimensions();
-      });
-    }
-
-    context.wrapper.addEventListener('mousemove', ({offsetX, offsetY}) => {
-      context.mousePos.x = offsetX;
-      context.mousePos.y = offsetY;
-      const [pxX, pxY] = this._getPxPerUnit();
-      context.mouseCoord.x = ScaleUtils.pxToCoord(offsetX, width,  center.x, pxX);
-      context.mouseCoord.y = ScaleUtils.pxToCoord(offsetY, height, center.y, pxY);
-    });
-
+    this._addWrapperListeners();
     window.addEventListener('resize', e => this._updateDimensions());
+  }
+
+  _addWrapperListeners() {
+    const {context} = this;
+    const {zoomEnabled} = context;
+
+    if (context.wrapper) {
+      if (zoomEnabled) {
+        context.wrapper.addEventListener('mousewheel', this._onMousewheel.bind(this));
+      }
+
+      context.wrapper.addEventListener('mousemove', this._onMousemove.bind(this));
+    }
+  }
+
+  _removeWrapperListeners() {
+    const {context} = this;
+    if (context.wrapper) {
+      context.wrapper.removeEventListener('mousewheel', this._onMousewheel.bind(this));
+      context.wrapper.removeEventListener('mousemove', this._onMousemove.bind(this));
+    }
+  }
+
+  _onMousewheel(e) {
+    e.preventDefault();
+    const {zoom} = this.context;
+    const _zoom = Math.min(10, Math.max(0.5, zoom + (e.deltaY / 10)));
+    this.context.zoom = _zoom;
+    this._updateDimensions();
+  }
+
+  _onMousemove({offsetX, offsetY}) {
+    const {context} = this;
+    const {center, width, height} = context;
+    context.mousePos.x = offsetX;
+    context.mousePos.y = offsetY;
+    const [pxX, pxY] = this._getPxPerUnit();
+    context.mouseCoord.x = ScaleUtils.pxToCoord(offsetX, width,  center.x, pxX);
+    context.mouseCoord.y = ScaleUtils.pxToCoord(offsetY, height, center.y, pxY);
   }
 
   _updateDimensions(init = false) {
     const {wrapper, startRange, center, width, height} = this.context;
-    const hasWrapper = wrapper !== document.body;
+    const hasWrapper = wrapper;
 
     const oldWidth = width;
     const oldHeight = height;
@@ -226,6 +253,6 @@ export default class Grapher {
 Grapher.defaultOptions = {
   live: false,
   startRange: false,
-  wrapper: document.body,
+  wrapper: false,
   zoomEnabled: false,
 };

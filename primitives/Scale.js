@@ -7,39 +7,45 @@ export default class Scale extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, lineWidth} = settings;
+    const {strokeColor, lineWidth, showX, showY} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
-    let minXLine = Math.ceil(minX);
-    let maxXLine = Math.floor(maxX);
+    if (showX) {
 
-    minXLine += +(Math.round(minX) === minXLine);
-    maxXLine += -(Math.round(maxX) === maxXLine);
+      let minXLine = Math.ceil(minX);
+      let maxXLine = Math.floor(maxX);
 
-    this.elements = [];
+      minXLine += +(Math.round(minX) === minXLine);
+      maxXLine += -(Math.round(maxX) === maxXLine);
 
-    for (let x = minXLine; x <= maxXLine; x++) {
+      this.elements = [];
 
-      const text = new Text();
+      for (let x = minXLine; x <= maxXLine; x++) {
 
-      text.addPoint(x, new Vector2(x, 0));
+        const text = new Text();
 
-      this.elements.push(text);
+        text.addPoint(x, new Vector2(x, 0));
+
+        this.elements.push(text);
+      }
     }
 
-    let minYLine = Math.ceil(minY);
-    let maxYLine = Math.floor(maxY);
+    if (showY) {
 
-    minYLine += +(Math.round(minY) === minYLine);
-    maxYLine += -(Math.round(maxY) === maxYLine);
+      let minYLine = Math.ceil(minY);
+      let maxYLine = Math.floor(maxY);
 
-    for (let y = minYLine; y <= maxYLine; y++) {
+      minYLine += +(Math.round(minY) === minYLine);
+      maxYLine += -(Math.round(maxY) === maxYLine);
 
-      const text = new Text();
+      for (let y = minYLine; y <= maxYLine; y++) {
 
-      text.addPoint(y, new Vector2(0, y));
+        const text = new Text();
 
-      this.elements.push(text);
+        text.addPoint(y, new Vector2(0, y));
+
+        this.elements.push(text);
+      }
     }
   }
 }
@@ -47,5 +53,7 @@ export default class Scale extends Primitive {
 Scale.optionTypes = {
   strokeColor: '#ccc',
   lineWidth: 1,
+  showX: true,
+  showY: true,
   zIndex: 0,
 };
