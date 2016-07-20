@@ -1,8 +1,9 @@
 import Primitive from './Primitive';
 import Line from '../renderables/Line';
-import Arrow from '../renderables/Arrow';
+import Polygon from '../renderables/Polygon';
 import Text from '../renderables/Text';
 import Vector2 from '../math/Vector2';
+import * as PolygonUtils from '../utils/PolygonUtils';
 
 export default class Axis extends Primitive {
 
@@ -73,19 +74,13 @@ export default class Axis extends Primitive {
 
     if (arrows) {
 
-      const xAxisArrow = new Arrow({
+      const xAxisArrow = PolygonUtils.createArrow(xAxisMax, 10, -90, {
         color: strokeColor,
-        rotation: -90,
       });
 
-      xAxisArrow.addPoint(xAxisMax);
-
-      const yAxisArrow = new Arrow({
+      const yAxisArrow = PolygonUtils.createArrow(yAxisMax, 10, 0, {
         color: strokeColor,
-        rotation: 0,
       });
-
-      yAxisArrow.addPoint(yAxisMax);
 
       this.elements.push(
         xAxisArrow,

@@ -1,6 +1,6 @@
 import Renderable from './Renderable';
 
-export default class Arrow extends Renderable {
+export default class Polygon extends Renderable {
   constructor(options = {}) {
     super(options);
 
@@ -12,8 +12,7 @@ export default class Arrow extends Renderable {
   }
 }
 
-Arrow.optionTypes = {
+Polygon.optionTypes = {
   color: '#333',
-  rotation: 0,
-  size: 10,
+  sizeInPx: false,
 };

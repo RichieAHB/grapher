@@ -46,7 +46,7 @@ export default class Primtive {
     // Update the settings
     this.settings = Object.assign({}, this.settings, options);
 
-    // Rebuild shouldn't need to do whole rebuild unless buffer changes
+    // TODO : Rebuild shouldn't need to do whole rebuild unless buffer changes
     this.make();
 
     this.events.trigger('update');
