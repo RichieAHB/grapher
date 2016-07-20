@@ -47,22 +47,26 @@ export default class Axis extends Primitive {
 
     if (xLabel && showX) {
 
+      const _xLabel = xLabel === 'x' ? '𝑥' : xLabel;
+
       const xAxisLabel = new Text({
         fontSize: 25,
       });
 
-      xAxisLabel.addPoint(xLabel, xAxisMax.add(new Vector2(-.5, .5)));
+      xAxisLabel.addPoint(_xLabel, xAxisMax.add(new Vector2(-.5, .5)));
 
       this.elements.push(xAxisLabel);
     }
 
     if (yLabel && showY) {
 
+      const _yLabel = yLabel === 'y' ? '𝑦' : yLabel;
+
       const yAxisLabel = new Text({
         fontSize: 25,
       });
 
-      yAxisLabel.addPoint(yLabel, yAxisMax.add(new Vector2(.5, -.5)));
+      yAxisLabel.addPoint(_yLabel, yAxisMax.add(new Vector2(.5, -.5)));
 
       this.elements.push(yAxisLabel);
     }
@@ -96,7 +100,7 @@ Axis.optionTypes = {
   showX: true,
   showY: true,
   strokeColor: '#555',
-  xLabel: '𝑥',
-  yLabel: '𝑦',
+  xLabel: false,
+  yLabel: false,
   lineWidth: 2,
 };
