@@ -45,6 +45,18 @@ export default class Grapher {
     return primitive;
   }
 
+  select(id) {
+    for (var i = 0; i < this.primitives.length; i++) {
+      const primitive = this.primitives[i];
+
+      if (primitive._id === id) {
+        return primitive;
+      }
+    }
+
+    return null;
+  }
+
   _addListeners() {
     this._addWrapperListeners();
     window.addEventListener('resize', e => this._updateDimensions());
