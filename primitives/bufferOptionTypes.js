@@ -1,5 +1,4 @@
 const bufferOptionsTypes = {
-  channels: 2,
   expr: () => {},
   fillWidth: true,
   maxX: 1,

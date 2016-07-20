@@ -10,7 +10,7 @@ export default class Buffer extends Optionable {
   }
 
   _build(oldSettings = {}, lerpFactor) {
-    const {channels, width, minX, maxX, expr, fillWidth} = this.settings;
+    const {width, minX, maxX, expr, fillWidth} = this.settings;
     const vAR = this.context.visibleAxisRange;
 
     const _minX = fillWidth ? vAR.minX : minX;
@@ -27,8 +27,8 @@ export default class Buffer extends Optionable {
         y = lerp(y0, y, lerpFactor);
       }
 
-      this.data[i * channels]     = x;
-      this.data[i * channels + 1] = y;
+      this.data[i * 2]     = x;
+      this.data[i * 2 + 1] = y;
     }
   }
 }
