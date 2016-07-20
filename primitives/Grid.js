@@ -7,7 +7,7 @@ export default class Grid extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, strokeWidth} = settings;
+    const {strokeColor, lineWidth} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     this.elements = [];
@@ -19,7 +19,7 @@ export default class Grid extends Primitive {
 
       const line = new Line({
         color: strokeColor,
-        width: strokeWidth,
+        width: lineWidth,
       });
 
       line.addPoint(new Vector2(x, minY));
@@ -35,7 +35,7 @@ export default class Grid extends Primitive {
 
       const line = new Line({
         color: strokeColor,
-        width: strokeWidth,
+        width: lineWidth,
       });
 
       line.addPoint(new Vector2(minX, y));
@@ -48,6 +48,6 @@ export default class Grid extends Primitive {
 
 Grid.optionTypes = {
   strokeColor: '#ccc',
-  strokeWidth: 1,
+  lineWidth: 1,
   zIndex: 0,
 };
