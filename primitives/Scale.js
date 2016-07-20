@@ -7,7 +7,7 @@ export default class Scale extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, lineWidth, showX, showY} = settings;
+    const {showX, showY} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     if (showX) {
@@ -51,8 +51,6 @@ export default class Scale extends Primitive {
 }
 
 Scale.optionTypes = {
-  strokeColor: '#ccc',
-  lineWidth: 1,
   showX: true,
   showY: true,
   zIndex: 0,
