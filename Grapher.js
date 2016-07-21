@@ -17,6 +17,8 @@ export default class Grapher {
       elementIndex: null,
     };
 
+    this._updateOnMouseMove = false;
+
     this._updateDimensions(true);
     this._addListeners();
 
@@ -33,6 +35,16 @@ export default class Grapher {
 
   add(type, options) {
     const primitive = this.context.primitiveFactory.make(type, options);
+
+    // Need a better way to do this
+    if (primitive.constructor.name === 'Tangent' && !this._updateOnMouseMove) {
+      this.context.events.listen('mousemove', () => {
+        this.frame();
+      });
+
+      this._updateOnMouseMove = true;
+    }
+
     this.primitives.push(primitive);
     this.primitives.sort((a, b) => {
       return (a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1;
@@ -99,6 +111,10 @@ export default class Grapher {
     const [pxX, pxY] = this._getPxPerUnit();
     context.mouseCoord.x = ScaleUtils.pxToCoord(offsetX, width,  center.x, pxX);
     context.mouseCoord.y = ScaleUtils.pxToCoord(offsetY, height, center.y, pxY);
+
+    window.requestAnimationFrame(() => {
+      context.events.trigger('mousemove');
+    });
   }
 
   _updateDimensions(init = false) {

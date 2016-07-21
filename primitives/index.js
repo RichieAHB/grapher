@@ -1,9 +1,10 @@
-import Axis   from './Axis';
-import Buffer from './Buffer';
-import Grid   from './Grid';
-import Line   from './Line';
-import Points from './Points';
-import Scale  from './Scale';
+import Axis     from './Axis';
+import Buffer   from './Buffer';
+import Grid     from './Grid';
+import Line     from './Line';
+import Points   from './Points';
+import Scale    from './Scale';
+import Tangent  from './Tangent';
 
 /*
  * A primitive is an element that you can add to the grapher
@@ -16,4 +17,5 @@ export {
   Line,
   Points,
   Scale,
+  Tangent,
 };

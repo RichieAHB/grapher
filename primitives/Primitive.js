@@ -3,7 +3,7 @@ import EventEmitter from '../EventEmitter';
 
 let id = 1;
 
-export default class Primtive {
+export default class Primitive {
 
   constructor(context, options = {}) {
 

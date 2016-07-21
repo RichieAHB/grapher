@@ -28,6 +28,5 @@ export default class Point extends Primitive {
 Point.optionTypes = {
   buffer: false,
   color: '#555',
-  expr: () => {},
   size: 5,
 };
