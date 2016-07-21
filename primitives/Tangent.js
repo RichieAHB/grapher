@@ -76,3 +76,7 @@ Tangent.optionTypes = {
   pointColor: '#333',
   pointSize: false,
 };
+
+Tangent.traits = [
+  'mousemove',
+];

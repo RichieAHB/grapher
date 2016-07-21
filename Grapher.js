@@ -19,6 +19,10 @@ export default class Grapher {
 
     this._updateOnMouseMove = false;
 
+    this._updateDimensions = this._updateDimensions.bind(this);
+    this._onMousewheel = this._onMousewheel.bind(this);
+    this._onMousemove = this._onMousemove.bind(this);
+
     this._updateDimensions(true);
     this._addListeners();
 
@@ -37,10 +41,8 @@ export default class Grapher {
     const primitive = this.context.primitiveFactory.make(type, options);
 
     // Need a better way to do this
-    if (primitive.constructor.name === 'Tangent' && !this._updateOnMouseMove) {
-      this.context.events.listen('mousemove', () => {
-        this.frame();
-      });
+    if (primitive.hasTrait('mousemove') && !this._updateOnMouseMove) {
+      this.context.events.listen('mousemove', this.frame.bind(this));
 
       this._updateOnMouseMove = true;
     }
@@ -71,7 +73,12 @@ export default class Grapher {
 
   _addListeners() {
     this._addWrapperListeners();
-    window.addEventListener('resize', e => this._updateDimensions());
+    window.addEventListener('resize', this._updateDimensions);
+  }
+
+  _removeListeners() {
+    this._removeWrapperListeners();
+    window.removeEventListener('resize', this._updateDimensions);
   }
 
   _addWrapperListeners() {
@@ -80,18 +87,18 @@ export default class Grapher {
 
     if (context.wrapper) {
       if (zoomEnabled) {
-        context.wrapper.addEventListener('mousewheel', this._onMousewheel.bind(this));
+        context.wrapper.addEventListener('mousewheel', this._onMousewheel);
       }
 
-      context.wrapper.addEventListener('mousemove', this._onMousemove.bind(this));
+      context.wrapper.addEventListener('mousemove', this._onMousemove);
     }
   }
 
   _removeWrapperListeners() {
     const {context} = this;
     if (context.wrapper) {
-      context.wrapper.removeEventListener('mousewheel', this._onMousewheel.bind(this));
-      context.wrapper.removeEventListener('mousemove', this._onMousemove.bind(this));
+      context.wrapper.removeEventListener('mousewheel', this._onMousewheel);
+      context.wrapper.removeEventListener('mousemove', this._onMousemove);
     }
   }
 
@@ -255,6 +262,7 @@ export default class Grapher {
 
   destroy() {
     this.context.renderer.canvas.remove();
+    this._removeListeners();
   }
 
   _getPxPerUnit() {

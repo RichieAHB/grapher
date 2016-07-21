@@ -51,4 +51,8 @@ export default class Primitive {
 
     this.events.trigger('update');
   }
+
+  hasTrait(trait) {
+    return ~(this.constructor.traits || []).indexOf(trait);
+  }
 }
