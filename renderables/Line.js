@@ -14,5 +14,5 @@ export default class Line extends Renderable {
 
 Line.optionTypes = {
   color: '#333',
-  lineWidth: 1,
+  width: 1,
 };

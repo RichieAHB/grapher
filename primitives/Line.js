@@ -14,7 +14,7 @@ export default class Line extends Primitive {
 
     const line = new _Line({
       color,
-      lineWidth,
+      width: lineWidth,
     });
 
     // Could break if channels is set to anything other than 2!
