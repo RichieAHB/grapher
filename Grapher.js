@@ -26,7 +26,9 @@ export default class Grapher {
     this._updateDimensions(true);
     this._addListeners();
 
-    this.frame();
+    if (this.context.wrapper) {
+      this.frame();
+    }
   }
 
   appendTo(node) {
@@ -35,6 +37,7 @@ export default class Grapher {
     this.context.wrapper = node;
     this._addWrapperListeners();
     this._updateDimensions();
+    this.frame();
   }
 
   add(type, options) {
@@ -117,7 +120,7 @@ export default class Grapher {
     context.mousePos.y = offsetY;
     const [pxX, pxY] = this._getPxPerUnit();
     context.mouseCoord.x = ScaleUtils.pxToCoord(offsetX, width,  center.x, pxX);
-    context.mouseCoord.y = ScaleUtils.pxToCoord(offsetY, height, center.y, pxY);
+    context.mouseCoord.y = ScaleUtils.pxToCoord(Math.abs(offsetY - height), height, center.y, pxY);
 
     window.requestAnimationFrame(() => {
       context.events.trigger('mousemove');
@@ -223,7 +226,7 @@ export default class Grapher {
 
     // Should this always be going?
     if (this.context.live) {
-      window.requestAnimationFrame(() =>  this.frame());
+      window.requestAnimationFrame(() =>  this.frame.bind(this));
     }
   }
 

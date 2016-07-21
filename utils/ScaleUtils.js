@@ -1,7 +1,7 @@
 import Vector2 from '../math/Vector2';
 
 export function pxToCoord(px, pxSize, coordCenter, pxPerUnit) {
-  return (px - (pxSize / 2)) / pxPerUnit - coordCenter;
+  return (px - (pxSize / 2)) / pxPerUnit + coordCenter;
 }
 
 export function coordToPx(coord, pxSize, coordCenter, pxPerUnit) {
