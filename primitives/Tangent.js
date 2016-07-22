@@ -1,5 +1,5 @@
 import Primitive from './Primitive';
-import Buffer from '../buffers/Buffer';
+import Buffer from './Buffer';
 import Line from '../renderables/Line';
 import Point from '../renderables/Point';
 import Vector2 from '../math/Vector2';
@@ -20,26 +20,23 @@ export default class Tangent extends Primitive {
     const {lineColor, lineWidth, expr, pointColor, pointSize} = settings;
     const {minX, maxX} = context.visibleAxisRange;
 
-    const data = [];
-
     const {x} = this.context.mouseCoord;
     const y = expr(x);
 
-    const tanFunc = this._getTanFunc(x, y);
+    const buffer = context.primitiveFactory.make('buffer', {
+      expr: this._getTanFunc(x, y),
+      width: 2,
+    });
 
-    data[0] = minX;
-    data[1] = tanFunc(minX);
-    data[2] = maxX;
-    data[3] = tanFunc(maxX);
+    const {data} = buffer._buffer;
 
     this.elements = [];
 
     const line = new Line({
       color: lineColor,
-      lineWidth,
+      width: lineWidth,
     });
 
-    // Could break if channels is set to anything other than 2!
     for (let i = 0; i < data.length; i += 2) {
       line.addPoint(new Vector2(data[i], data[i+1]));
     }
