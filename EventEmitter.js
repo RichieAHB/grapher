@@ -4,13 +4,17 @@ export default class EventEmitter {
     this.events = {};
   }
 
-  listen(name, listener) {
+  listen(name, listener, priority = 0) {
     this.events[name] = this.events[name] || [];
-    this.events[name].push(listener);
+    this.events[name].push({
+      listener,
+      priority,
+    });
+    this.events[name].sort((a, b) => b.priority - a.priority);
   }
 
   trigger(name, args = [], _this = null) {
-    (this.events[name] || []).forEach(listener => {
+    (this.events[name] || []).forEach(({ listener }) => {
       listener.apply(_this, args);
     });
   }

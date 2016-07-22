@@ -4,7 +4,7 @@ import Line from '../renderables/Line';
 import Point from '../renderables/Point';
 import Vector2 from '../math/Vector2';
 
-export default class Tangent extends Primitive {
+export default class Normal extends Primitive {
 
   constructor(context, options = {}) {
     super(context, options);
@@ -61,11 +61,11 @@ export default class Tangent extends Primitive {
     const dx = .0000001;
     const m = (expr(x + dx) - y) / dx;
 
-    return x2 => m * (x2 - x) + y;
+    return x2 => (-1 / m) * (x2 - x) + y;
   }
 }
 
-Tangent.optionTypes = {
+Normal.optionTypes = {
   lineColor: '#555',
   expr: () => {},
   lineWidth: 2,
@@ -74,6 +74,6 @@ Tangent.optionTypes = {
   xPos: 0,
 };
 
-Tangent.traits = [
+Normal.traits = [
   'mousemove',
 ];

@@ -45,7 +45,7 @@ export default class Grapher {
 
     // Need a better way to do this
     if (primitive.hasTrait('mousemove') && !this._updateOnMouseMove) {
-      this.context.events.listen('mousemove', this.frame.bind(this));
+      this.context.events.listen('mousemove', this.frame.bind(this), -1);
 
       this._updateOnMouseMove = true;
     }
@@ -123,7 +123,7 @@ export default class Grapher {
     context.mouseCoord.y = ScaleUtils.pxToCoord(Math.abs(offsetY - height), height, center.y, pxY);
 
     window.requestAnimationFrame(() => {
-      context.events.trigger('mousemove');
+      context.events.trigger('mousemove', [context.mouseCoord.x, context.mouseCoord.y]);
     });
   }
 

@@ -5,6 +5,7 @@ import Line     from './Line';
 import Points   from './Points';
 import Scale    from './Scale';
 import Tangent  from './Tangent';
+import Normal   from './Normal';
 
 /*
  * A primitive is an element that you can add to the grapher
@@ -18,4 +19,5 @@ export {
   Points,
   Scale,
   Tangent,
+  Normal,
 };
