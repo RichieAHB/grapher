@@ -5,8 +5,14 @@ export default class Buffer extends Optionable {
   constructor(context, options = {}) {
     super(options);
     this.context = context;
-    this.data = [];
-    this._build();
+
+    // If data has been passed in then use it
+    this.data = (this.settings.data || []).slice(0);
+
+    // Don't build as data already exists!
+    if (!this.data.length) {
+      this._build();
+    }
   }
 
   _build(oldSettings = {}, lerpFactor) {

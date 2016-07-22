@@ -20,10 +20,12 @@ export default class Normal extends Primitive {
     const {lineColor, lineWidth, expr, pointColor, pointSize, xPos} = settings;
     const {minX, maxX} = context.visibleAxisRange;
 
-    const y = expr(xPos);
+    let _xPos = xPos ? xPos : .00001; // Make sure we don't get horrendous scales
+
+    const y = expr(_xPos);
 
     const buffer = context.primitiveFactory.make('buffer', {
-      expr: this._getTanFunc(xPos, y),
+      expr: this._getNormFunc(_xPos, y),
       width: 2,
     });
 
@@ -49,19 +51,21 @@ export default class Normal extends Primitive {
         size: pointSize,
       });
 
-      point.addPoint(new Vector2(xPos, y));
+      point.addPoint(new Vector2(_xPos, y));
 
       this.elements.push(point);
     }
   }
 
-  _getTanFunc(x, y) {
+  _getNormFunc(x, y) {
     const {expr} = this.settings;
 
     const dx = .0000001;
     const m = (expr(x + dx) - y) / dx;
 
-    return x2 => (-1 / m) * (x2 - x) + y;
+    return x2 => {
+      return (-1 / m) * (x2 - x) + y;
+    };
   }
 }
 
@@ -70,7 +74,7 @@ Normal.optionTypes = {
   expr: () => {},
   lineWidth: 2,
   pointColor: '#333',
-  pointSize: false,
+  pointSize: null,
   xPos: 0,
 };
 

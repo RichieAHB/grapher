@@ -1,4 +1,5 @@
 const bufferOptionsTypes = {
+  data: null,
   expr: () => {},
   fillWidth: true,
   maxX: 1,

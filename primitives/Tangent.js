@@ -70,7 +70,7 @@ Tangent.optionTypes = {
   expr: () => {},
   lineWidth: 2,
   pointColor: '#333',
-  pointSize: false,
+  pointSize: null,
   xPos: 0,
 };
 

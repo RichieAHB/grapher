@@ -30,6 +30,6 @@ Line.optionTypes = {
   color: '#555',
   mouseenter: false,
   mouseleave: false,
-  buffer: false,
+  buffer: null,
   lineWidth: 2,
 };
