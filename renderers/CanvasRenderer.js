@@ -46,8 +46,9 @@ export default class CanvasRenderer {
     const {points, settings} = line;
     const {color, width, lineDash} = settings;
 
+    ctx.save();
+
     if (width % 2) {
-      ctx.save();
       ctx.translate(.5, .5);
     }
 
@@ -74,10 +75,7 @@ export default class CanvasRenderer {
     ctx.lineWidth = width;
 
     ctx.stroke();
-
-    if (width % 2) {
-      ctx.restore();
-    }
+    ctx.restore();
   }
 
   _renderPoint(point, scaleX, scaleY, center) {
