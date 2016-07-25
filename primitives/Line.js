@@ -7,13 +7,14 @@ export default class Line extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {color, lineWidth, buffer} = settings;
+    const {color, lineDash, lineWidth, buffer} = settings;
     const {data} = buffer._buffer;
 
     this.elements = [];
 
     const line = new _Line({
       color,
+      lineDash,
       width: lineWidth,
     });
 
@@ -31,5 +32,6 @@ Line.optionTypes = {
   mouseenter: false,
   mouseleave: false,
   buffer: null,
+  lineDash: false,
   lineWidth: 2,
 };

@@ -44,7 +44,7 @@ export default class CanvasRenderer {
 
     const {canvas, ctx} = this;
     const {points, settings} = line;
-    const {color, width} = settings;
+    const {color, width, lineDash} = settings;
 
     if (width % 2) {
       ctx.save();
@@ -64,6 +64,10 @@ export default class CanvasRenderer {
         .scale(scaleX, -scaleY);
 
       ctx.lineTo(Math.round(point.x), Math.round(point.y));
+    }
+
+    if (ctx.setLineDash && lineDash) {
+      ctx.setLineDash(lineDash);
     }
 
     ctx.strokeStyle = color;
@@ -98,18 +102,19 @@ export default class CanvasRenderer {
 
     const {canvas, ctx} = this;
     const {points, settings} = text;
-    const {fontFamily, fontColor, fontSize, outlineColor, outlineWidth} = settings;
+    const {fontFamily, fontColor, fontSize, offset, outlineColor, outlineWidth, textAlign, textBaseline} = settings;
 
     for (let i = 0; i < points.length; i++) {
       let { point, text } = points[i];
       point = point
         .subtract(center)
-        .scale(scaleX, -scaleY);
+        .scale(scaleX, -scaleY)
+        .add(new Vector2(offset[0], -offset[1]));
 
       ctx.font = `${fontSize}px ${fontFamily}`;
       ctx.fillStyle = fontColor;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.textAlign = textAlign;
+      ctx.textBaseline = textBaseline;
       ctx.strokeStyle = outlineColor;
       ctx.lineWidth = outlineWidth * 2;
 

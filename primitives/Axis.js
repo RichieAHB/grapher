@@ -51,10 +51,13 @@ export default class Axis extends Primitive {
       const _xLabel = xLabel === 'x' ? '𝑥' : xLabel;
 
       const xAxisLabel = new Text({
-        fontSize: 25,
+        fontSize: 16,
+        offset: [-16, 16],
+        textAlign: 'right',
+        textBaseline: 'bottom',
       });
 
-      xAxisLabel.addPoint(_xLabel, xAxisMax.add(new Vector2(-.5, .5)));
+      xAxisLabel.addPoint(_xLabel, xAxisMax);
 
       this.elements.push(xAxisLabel);
     }
@@ -64,10 +67,13 @@ export default class Axis extends Primitive {
       const _yLabel = yLabel === 'y' ? '𝑦' : yLabel;
 
       const yAxisLabel = new Text({
-        fontSize: 25,
+        fontSize: 16,
+        offset: [16, -16],
+        textAlign: 'left',
+        textBaseline: 'top',
       });
 
-      yAxisLabel.addPoint(_yLabel, yAxisMax.add(new Vector2(.5, -.5)));
+      yAxisLabel.addPoint(_yLabel, yAxisMax);
 
       this.elements.push(yAxisLabel);
     }

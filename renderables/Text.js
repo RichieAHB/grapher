@@ -20,6 +20,9 @@ Text.optionTypes = {
   fontColor: '#333',
   fontFamily: 'Arial',
   fontSize: 16,
+  offset: [0, 0],
   outlineColor: '#fff',
   outlineWidth: 2,
+  textAlign: 'center',
+  textBaseline: 'middle',
 };
