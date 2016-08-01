@@ -30,7 +30,10 @@ export function graph(evaluate) {
       const regex = new RegExp(`^(${multiTypes.join('|')})\\d*$`);
 
       if (~singleTypes.indexOf(key)) {
-        grapher.add(key, params);
+        let _params = Object.assign({}, params);
+        // Remove line width from the global
+        delete _params.lineWidth;
+        grapher.add(key, _params);
       } else if (matches = key.match(regex)) {
         const type = matches[1];
 
