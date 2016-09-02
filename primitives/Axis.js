@@ -80,11 +80,17 @@ export default class Axis extends Primitive {
 
     if (arrows) {
 
-      const xAxisArrow = PolygonUtils.createArrow(xAxisMax, 0.5, -90, {
+      const px = 15;
+      const coords = px / this.context.pxPerUnit.x;
+
+      const sizeX = coords;
+      const sizeY = coords;
+
+      const xAxisArrow = PolygonUtils.createArrow(xAxisMax, sizeX, -90, {
         color: strokeColor,
       });
 
-      const yAxisArrow = PolygonUtils.createArrow(yAxisMax, 0.5, 0, {
+      const yAxisArrow = PolygonUtils.createArrow(yAxisMax, sizeY, 0, {
         color: strokeColor,
       });
 

@@ -26,6 +26,7 @@ export default class Context {
 
     this.mousePos = new Vector2(-1, -1);
     this.mouseCoord = new Vector2(-1, -1);
+    this.pxPerUnit = new Vector2(-1, -1);
 
     this.clock = Date.now();
   }

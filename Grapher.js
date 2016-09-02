@@ -137,9 +137,12 @@ export default class Grapher {
     const newWidth  = this.context.width  = hasWrapper ? wrapper.offsetWidth  : window.innerWidth;
     const newHeight = this.context.height = hasWrapper ? wrapper.offsetHeight : window.innerHeight;
 
-    if (!startRange) {
+    const [pxX, pxY] = this._getPxPerUnit();
 
-      const [pxX, pxY] = this._getPxPerUnit();
+    this.context.pxPerUnit.x = pxX;
+    this.context.pxPerUnit.y = pxY;
+
+    if (!startRange) {
 
       const [minX, maxX] = ScaleUtils.getVisibleAxisRange(newWidth,  center.x, pxX);
       const [minY, maxY] = ScaleUtils.getVisibleAxisRange(newHeight, center.y, pxY);
@@ -284,7 +287,7 @@ export default class Grapher {
       [minX, maxX, minY, maxY] = [-x, x, -y, y];
     }
 
-    return [width / (maxX - minX) * zoom, height / (maxY - minY) * zoom];
+    return [Math.abs(width / (maxX - minX) * zoom), Math.abs(height / (maxY - minY) * zoom)];
     // return this.context.zoom * _baseScaleFactor;
   }
 }
