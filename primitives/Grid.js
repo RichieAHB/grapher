@@ -7,15 +7,19 @@ export default class Grid extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {strokeColor, lineWidth} = settings;
+    const {lineWidth, interval, strokeColor} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     this.elements = [];
 
-    const minXLine = Math.ceil(minX);
-    const maxXLine = Math.floor(maxX);
+    let minXLine = Math.ceil(minX);
+    let maxXLine = Math.floor(maxX);
 
-    for (let x = minXLine; x <= maxXLine; x++) {
+    // Make sure it falls on the interval
+    minXLine = minXLine - (minXLine % interval);
+    maxXLine = maxXLine - (maxXLine % interval);
+
+    for (let x = minXLine; x <= maxXLine; x += interval) {
 
       const line = new Line({
         color: strokeColor,
@@ -28,10 +32,13 @@ export default class Grid extends Primitive {
       this.elements.push(line);
     }
 
-    const minYLine = Math.ceil(minY);
-    const maxYLine = Math.floor(maxY);
+    let minYLine = Math.ceil(minY);
+    let maxYLine = Math.floor(maxY);
 
-    for (let y = minYLine; y <= maxYLine; y++) {
+    minYLine = minYLine - (minYLine % interval);
+      maxYLine = maxYLine - (maxYLine % interval);
+
+    for (let y = minYLine; y <= maxYLine; y += interval) {
 
       const line = new Line({
         color: strokeColor,
@@ -47,7 +54,8 @@ export default class Grid extends Primitive {
 }
 
 Grid.optionTypes = {
-  strokeColor: '#ccc',
+  interval: 1,
   lineWidth: 1,
+  strokeColor: '#ccc',
   zIndex: 0,
 };

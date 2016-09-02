@@ -7,8 +7,10 @@ export default class Scale extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {showX, showY} = settings;
+    const {interval, showX, showY} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
+
+    this.elements = [];
 
     if (showX) {
 
@@ -18,9 +20,11 @@ export default class Scale extends Primitive {
       minXLine += +(Math.round(minX) === minXLine);
       maxXLine += -(Math.round(maxX) === maxXLine);
 
-      this.elements = [];
+      // Make sure it falls on the interval
+      minXLine = minXLine - (minXLine % interval);
+      maxXLine = maxXLine - (maxXLine % interval);
 
-      for (let x = minXLine; x <= maxXLine; x++) {
+      for (let x = minXLine; x <= maxXLine; x += interval) {
 
         const text = new Text();
 
@@ -38,7 +42,10 @@ export default class Scale extends Primitive {
       minYLine += +(Math.round(minY) === minYLine);
       maxYLine += -(Math.round(maxY) === maxYLine);
 
-      for (let y = minYLine; y <= maxYLine; y++) {
+      minYLine = minYLine - (minYLine % interval);
+      maxYLine = maxYLine - (maxYLine % interval);
+
+      for (let y = minYLine; y <= maxYLine; y += interval) {
 
         const text = new Text();
 
@@ -51,6 +58,7 @@ export default class Scale extends Primitive {
 }
 
 Scale.optionTypes = {
+  interval: 1,
   showX: true,
   showY: true,
   zIndex: 0,
