@@ -267,7 +267,8 @@ export default class Grapher {
   }
 
   destroy() {
-    this.context.renderer.canvas.remove();
+    const {canvas} = this.context.renderer;
+    canvas.parentNode.removeChild(canvas);
     this._removeListeners();
   }
 
