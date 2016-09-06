@@ -2,8 +2,9 @@ import Primitive from './Primitive';
 import Line from '../renderables/Line';
 import Polygon from '../renderables/Polygon';
 import Text from '../renderables/Text';
+import Sprite from '../renderables/Sprite';
 import Vector2 from '../math/Vector2';
-import * as PolygonUtils from '../utils/PolygonUtils';
+import * as SpriteUtils from '../utils/SpriteUtils';
 
 export default class Axis extends Primitive {
 
@@ -80,19 +81,28 @@ export default class Axis extends Primitive {
 
     if (arrows) {
 
-      const px = 15;
-      const coords = px / this.context.pxPerUnit.x;
+      const size = 10;
 
-      const sizeX = coords;
-      const sizeY = coords;
+      const xMap = SpriteUtils.createArrowMap(size, 90, strokeColor);
+      const yMap = SpriteUtils.createArrowMap(size, 0, strokeColor);
 
-      const xAxisArrow = PolygonUtils.createArrow(xAxisMax, sizeX, -90, {
-        color: strokeColor,
+      const xAxisArrow = new Sprite({
+        height: xMap.height,
+        map: xMap,
+        origin: new Vector2(xMap.width / 2, xMap.height / 2),
+        width: xMap.width,
       });
 
-      const yAxisArrow = PolygonUtils.createArrow(yAxisMax, sizeY, 0, {
-        color: strokeColor,
+      xAxisArrow.addPoint(xAxisMax);
+
+      const yAxisArrow = new Sprite({
+        height: yMap.height,
+        map: yMap,
+        origin: new Vector2(yMap.width / 2, yMap.height / 2),
+        width: yMap.width,
       });
+
+      yAxisArrow.addPoint(yAxisMax);
 
       this.elements.push(
         xAxisArrow,

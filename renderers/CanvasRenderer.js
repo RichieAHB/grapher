@@ -3,6 +3,7 @@ import Line from '../renderables/Line';
 import Text from '../renderables/Text';
 import Point from '../renderables/Point';
 import Polygon from '../renderables/Polygon';
+import Sprite from '../renderables/Sprite';
 
 export default class CanvasRenderer {
 
@@ -32,6 +33,8 @@ export default class CanvasRenderer {
       this._renderPoint(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Polygon) {
       this._renderPolygon(renderable, scaleX, scaleY, center);
+    } else if (renderable instanceof Sprite) {
+      this._renderSprite(renderable, scaleX, scaleY, center);
     }
   }
 
@@ -152,6 +155,21 @@ export default class CanvasRenderer {
     }
 
     ctx.fill();
+  }
+
+  _renderSprite(polygon, scaleX, scaleY, center) {
+    const {canvas, ctx} = this;
+    const {points, settings} = polygon;
+    const {height, map, origin, width} = settings;
+
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i]
+        .subtract(center)
+        .scale(scaleX, -scaleY)
+        .subtract(origin);
+
+      ctx.drawImage(map, point.x, point.y, width, height);
+    }
   }
 
   clear() {
