@@ -14,16 +14,17 @@ export function createArrowMap(size, rotation, color) {
   const ctx    = canvas.getContext('2d');
 
   const h = size;
-  const b = h * 2;
-  const hyp = Math.sqrt((h * h) + (h * h));
+  const b = h * 1.25;
+  const bs = b / 2;
+  const hyp = Math.round(Math.sqrt((h * h) + (bs * bs)));
 
   canvas.height = 2 * hyp;
   canvas.width = 2 * hyp;
 
 
   const p1 = new Vector2(hyp, hyp);
-  const b1 = new Vector2(hyp - h, hyp + h);
-  const b2 = new Vector2(hyp + h, hyp + h);
+  const b1 = new Vector2(hyp - bs, hyp + h);
+  const b2 = new Vector2(hyp + bs, hyp + h);
 
   const _rotation = MathUtils.degToRad(rotation);
   const p2 = b1.rotateAround(p1, _rotation);
@@ -34,7 +35,9 @@ export function createArrowMap(size, rotation, color) {
   ctx.lineTo(Math.round(p2.x), Math.round(p2.y));
   ctx.lineTo(Math.round(p3.x), Math.round(p3.y));
   ctx.fillStyle = color;
+  ctx.strokeStyle = color;
   ctx.fill();
+  ctx.stroke();
 
   return canvasToImage(canvas);
 }
