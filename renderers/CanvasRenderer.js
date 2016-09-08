@@ -55,17 +55,18 @@ export default class CanvasRenderer {
       ctx.translate(.5, .5);
     }
 
-    ctx.scale(scaleX, -scaleY);
-    ctx.translate(-center.x, -center.y);
+    const firstPoint = points[0]
+       .subtract(center)
+       .scale(scaleX, -scaleY);
 
-    const firstPoint = points[0];
+     ctx.beginPath();
+     ctx.moveTo(Math.round(firstPoint.x), Math.round(firstPoint.y));
 
-    ctx.beginPath();
-    ctx.moveTo(firstPoint.x, firstPoint.y);
-
-    for (let i = 1; i < points.length; i++) {
-      const point = points[i];
-      ctx.lineTo(point.x, point.y);
+     for (let i = 1; i < points.length; i++) {
+       const point = points[i]
+         .subtract(center)
+         .scale(scaleX, -scaleY);
+       ctx.lineTo(Math.round(point.x), Math.round(point.y));
     }
 
     ctx.restore();
