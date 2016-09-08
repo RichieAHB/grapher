@@ -62,6 +62,6 @@ Grid.optionTypes = {
   intervalX: null,
   intervalY: null,
   lineWidth: 1,
-  strokeColor: '#ccc',
+  strokeColor: '#ddd',
   zIndex: 0,
 };

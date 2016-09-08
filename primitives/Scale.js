@@ -16,8 +16,8 @@ export default class Scale extends Primitive {
 
       const intX = intervalX || interval;
 
-      let minXLine = Math.ceil(minX);
-      let maxXLine = Math.floor(maxX);
+      let minXLine = Math.ceil(minX + intX) - intX;
+      let maxXLine = Math.floor(maxX + intX) - intX;
 
       minXLine += +(Math.round(minX) === minXLine);
       maxXLine += -(Math.round(maxX) === maxXLine);
@@ -27,8 +27,13 @@ export default class Scale extends Primitive {
       maxXLine = maxXLine - (maxXLine % intX);
 
       for (let x = minXLine; x <= maxXLine; x += intX) {
+        if (x === 0) {
+          continue;
+        }
 
-        const text = new Text();
+        const text = new Text({
+          offset: [0, -14],
+        });
 
         text.addPoint(x, new Vector2(x, 0));
 
@@ -40,8 +45,8 @@ export default class Scale extends Primitive {
 
       const intY = intervalY || interval;
 
-      let minYLine = Math.ceil(minY);
-      let maxYLine = Math.floor(maxY);
+      let minYLine = Math.ceil(minY + intY) - intY;
+      let maxYLine = Math.floor(maxY + intY) - intY;
 
       minYLine += +(Math.round(minY) === minYLine);
       maxYLine += -(Math.round(maxY) === maxYLine);
@@ -50,13 +55,28 @@ export default class Scale extends Primitive {
       maxYLine = maxYLine - (maxYLine % intY);
 
       for (let y = minYLine; y <= maxYLine; y += intY) {
+        if (y === 0) {
+          continue;
+        }
 
-        const text = new Text();
+        const text = new Text({
+          offset: [-10, 0],
+        });
 
         text.addPoint(y, new Vector2(0, y));
 
         this.elements.push(text);
       }
+    }
+
+    if (showX || showY) {
+      const text = new Text({
+        offset: [-10, -14],
+      });
+
+      text.addPoint(0, new Vector2(0, 0));
+
+      this.elements.push(text);
     }
   }
 }
