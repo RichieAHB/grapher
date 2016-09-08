@@ -1,5 +1,12 @@
 import Vector2 from '../math/Vector2';
 import * as MathUtils from './MathUtils';
+import Sprite from '../renderables/Sprite';
+
+function canvasToImage(canvas) {
+  const img = new Image();
+  img.src = canvas.toDataURL('image/png');
+  return img;
+}
 
 export function createArrowMap(size, rotation, color) {
 
@@ -29,7 +36,32 @@ export function createArrowMap(size, rotation, color) {
   ctx.fillStyle = color;
   ctx.fill();
 
-  const img = new Image();
-  img.src = canvas.toDataURL('image/png');
-  return img;
+  return canvasToImage(canvas);
+}
+
+function createPointMap(radius, color) {
+
+  const canvas = document.createElement('canvas');
+  const ctx    = canvas.getContext('2d');
+
+  canvas.height = 2 * radius;
+  canvas.width = 2 * radius;
+
+  ctx.beginPath();
+  ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.fill();
+
+  return canvasToImage(canvas);
+}
+
+export function createPointSprite(radius, color) {
+  const pointMap = createPointMap(radius, color);
+
+  return new Sprite({
+    height: pointMap.height,
+    map: pointMap,
+    origin: new Vector2(pointMap.width / 2, pointMap.height / 2),
+    width: pointMap.width,
+  });
 }

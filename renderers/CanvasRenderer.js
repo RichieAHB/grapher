@@ -1,9 +1,9 @@
 import Vector2 from '../math/Vector2';
-import Line from '../renderables/Line';
-import Text from '../renderables/Text';
-import Point from '../renderables/Point';
+import Line    from '../renderables/Line';
+import Text    from '../renderables/Text';
 import Polygon from '../renderables/Polygon';
-import Sprite from '../renderables/Sprite';
+import Sprite  from '../renderables/Sprite';
+import Circle  from '../renderables/Circle';
 
 export default class CanvasRenderer {
 
@@ -29,12 +29,12 @@ export default class CanvasRenderer {
       this._renderLine(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Text) {
       this._renderText(renderable, scaleX, scaleY, center);
-    } else if (renderable instanceof Point) {
-      this._renderPoint(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Polygon) {
       this._renderPolygon(renderable, scaleX, scaleY, center);
     } else if (renderable instanceof Sprite) {
       this._renderSprite(renderable, scaleX, scaleY, center);
+    } else if (renderable instanceof Circle) {
+      this._renderCircle(renderable, scaleX, scaleY, center);
     }
   }
 
@@ -55,20 +55,20 @@ export default class CanvasRenderer {
       ctx.translate(.5, .5);
     }
 
-    const firstPoint = points[0]
-      .subtract(center)
-      .scale(scaleX, -scaleY);
+    ctx.scale(scaleX, -scaleY);
+    ctx.translate(-center.x, -center.y);
+
+    const firstPoint = points[0];
 
     ctx.beginPath();
-    ctx.moveTo(Math.round(firstPoint.x), Math.round(firstPoint.y));
+    ctx.moveTo(firstPoint.x, firstPoint.y);
 
     for (let i = 1; i < points.length; i++) {
-      const point = points[i]
-        .subtract(center)
-        .scale(scaleX, -scaleY);
-
-      ctx.lineTo(Math.round(point.x), Math.round(point.y));
+      const point = points[i];
+      ctx.lineTo(point.x, point.y);
     }
+
+    ctx.restore();
 
     if (ctx.setLineDash && lineDash) {
       ctx.setLineDash(lineDash);
@@ -78,25 +78,6 @@ export default class CanvasRenderer {
     ctx.lineWidth = width;
 
     ctx.stroke();
-    ctx.restore();
-  }
-
-  _renderPoint(point, scaleX, scaleY, center) {
-
-    const {canvas, ctx} = this;
-    const {points, settings} = point;
-    const {size, color} = settings;
-
-    for (let i = 0; i < points.length; i++) {
-      const _point = points[i]
-        .subtract(center)
-        .scale(scaleX, -scaleY);
-
-      ctx.beginPath();
-      ctx.arc(Math.round(_point.x), Math.round(_point.y), size, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
   }
 
   _renderText(text, scaleX, scaleY, center) {
@@ -170,6 +151,30 @@ export default class CanvasRenderer {
 
       ctx.drawImage(map, point.x, point.y, width, height);
     }
+  }
+
+  _renderCircle(point, scaleX, scaleY, center) {
+
+    const {canvas, ctx} = this;
+    const {points, settings} = point;
+    const {radius, color, lineWidth} = settings;
+
+
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+
+      ctx.save();
+      ctx.scale(scaleX, -scaleY);
+      ctx.translate(-center.x, -center.y);
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+      ctx.restore();
+
+      ctx.lineWidth = lineWidth;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    }
+
   }
 
   clear() {

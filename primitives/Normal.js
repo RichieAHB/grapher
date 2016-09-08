@@ -1,7 +1,7 @@
 import Primitive from './Primitive';
 import Buffer from './Buffer';
 import Line from '../renderables/Line';
-import Point from '../renderables/Point';
+import * as SpriteUtils from '../utils/SpriteUtils';
 import Vector2 from '../math/Vector2';
 
 export default class Normal extends Primitive {
@@ -46,10 +46,7 @@ export default class Normal extends Primitive {
 
     if (pointSize) {
 
-      const point = new Point({
-        color: pointColor,
-        size: pointSize,
-      });
+      const point = SpriteUtils.createPointSprite(pointSize, pointColor);
 
       point.addPoint(new Vector2(_xPos, y));
 

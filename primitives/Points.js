@@ -1,8 +1,9 @@
 import Primitive from './Primitive';
-import _Point from '../renderables/Point';
+import Sprite from '../renderables/Sprite';
+import * as SpriteUtils from '../utils/SpriteUtils';
 import Vector2 from '../math/Vector2';
 
-export default class Point extends Primitive {
+export default class Points extends Primitive {
 
   make() {
 
@@ -12,10 +13,7 @@ export default class Point extends Primitive {
 
     this.elements = [];
 
-    const point = new _Point({
-      color,
-      size,
-    });
+    const point = SpriteUtils.createPointSprite(size, color);
 
     for (let i = 0; i < data.length; i += 2) {
       point.addPoint(new Vector2(data[i], data[i+1]));
@@ -25,7 +23,7 @@ export default class Point extends Primitive {
   }
 }
 
-Point.optionTypes = {
+Points.optionTypes = {
   buffer: null,
   color: '#555',
   size: 5,

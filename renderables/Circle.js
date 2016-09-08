@@ -1,6 +1,6 @@
 import Renderable from './Renderable';
 
-export default class Point extends Renderable {
+export default class Circle extends Renderable {
   constructor(options = {}) {
     super(options);
 
@@ -12,7 +12,8 @@ export default class Point extends Renderable {
   }
 }
 
-Point.optionTypes = {
+Circle.optionTypes = {
   color: '#333',
-  size: 5,
+  lineWidth: 2,
+  radius: 1,
 };
