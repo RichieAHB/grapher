@@ -121,9 +121,9 @@ export default class Grapher {
 
   _onTouchmove({touches}) {
     const {clientX, clientY, target} = touches[0];
-    const {offsetLeft, offsetTop} = target;
-    const offsetX = clientX - offsetLeft;
-    const offsetY = clientY - offsetTop;
+    const {left, top} = target.getBoundingClientRect();
+    const offsetX = clientX - left;
+    const offsetY = clientY - top;
     this._onMove(offsetX, offsetY);
   }
 
