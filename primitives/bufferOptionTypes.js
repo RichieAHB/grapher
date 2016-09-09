@@ -1,6 +1,7 @@
 const bufferOptionsTypes = {
   data: null,
   expr: () => {},
+  transpose: false,
   fillWidth: true,
   maxX: 1,
   minX: -1,
