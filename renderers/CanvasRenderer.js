@@ -71,8 +71,8 @@ export default class CanvasRenderer {
 
     ctx.restore();
 
-    if (ctx.setLineDash && lineDash) {
-      ctx.setLineDash(lineDash);
+    if (ctx.setLineDash) {
+      ctx.setLineDash(lineDash || []);
     }
 
     ctx.strokeStyle = color;
@@ -98,7 +98,11 @@ export default class CanvasRenderer {
       ctx.fillStyle = fontColor;
       ctx.textAlign = textAlign;
       ctx.textBaseline = textBaseline;
-      ctx.setLineDash([]);
+
+      if (ctx.setLineDash) {
+        ctx.setLineDash([]);
+      }
+
       ctx.strokeStyle = outlineColor;
       ctx.lineWidth = outlineWidth * 2;
 
@@ -173,7 +177,11 @@ export default class CanvasRenderer {
       ctx.restore();
 
       ctx.lineWidth = lineWidth;
-      ctx.setLineDash([]);
+
+      if (ctx.setLineDash) {
+        ctx.setLineDash([]);
+      }
+
       ctx.strokeStyle = color;
       ctx.stroke();
     }

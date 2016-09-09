@@ -90,18 +90,20 @@ export default class Grapher {
 
     if (context.wrapper) {
       if (zoomEnabled) {
-        context.wrapper.addEventListener('mousewheel', this._onMousewheel);
+        context.wrapper.addEventListener('mousewheel', this._onMousewheel.bind(this));
       }
 
-      context.wrapper.addEventListener('mousemove', this._onMousemove);
+      context.wrapper.addEventListener('mousemove', this._onMousemove.bind(this));
+      context.wrapper.addEventListener('touchmove', this._onTouchmove.bind(this));
     }
   }
 
   _removeWrapperListeners() {
     const {context} = this;
     if (context.wrapper) {
-      context.wrapper.removeEventListener('mousewheel', this._onMousewheel);
-      context.wrapper.removeEventListener('mousemove', this._onMousemove);
+      context.wrapper.removeEventListener('mousewheel', this._onMousewheel.bind(this));
+      context.wrapper.removeEventListener('mousemove', this._onMousemove.bind(this));
+      context.wrapper.removeEventListener('touchmove', this._onTouchmove.bind(this));
     }
   }
 
@@ -114,6 +116,18 @@ export default class Grapher {
   }
 
   _onMousemove({offsetX, offsetY}) {
+    this._onMove(offsetX, offsetY);
+  }
+
+  _onTouchmove({touches}) {
+    const {clientX, clientY, target} = touches[0];
+    const {offsetLeft, offsetTop} = target;
+    const offsetX = clientX - offsetLeft;
+    const offsetY = clientY - offsetTop;
+    this._onMove(offsetX, offsetY);
+  }
+
+  _onMove(offsetX, offsetY) {
     const {context} = this;
     const {center, width, height} = context;
     context.mousePos.x = offsetX;

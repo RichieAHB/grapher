@@ -33,8 +33,8 @@ export default class Buffer extends Optionable {
         y = lerp(y0, y, lerpFactor);
       }
 
-      this.data[i * 2]     = transpose ? x : y;
-      this.data[i * 2 + 1] = transpose ? y : x;
+      this.data[i * 2]     = transpose ? y : x;
+      this.data[i * 2 + 1] = transpose ? x : y;
     }
   }
 }

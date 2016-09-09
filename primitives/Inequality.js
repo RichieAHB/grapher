@@ -13,6 +13,10 @@ export default class Inequality extends Primitive {
     const {lineColor, lineWidth, expr, surfaceColor, type, variable, width} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
+    if (!type) {
+      return false;
+    }
+
     const buffer = context.primitiveFactory.make('buffer', {
       expr: expr,
       transpose: variable === 'y',
@@ -83,8 +87,7 @@ Inequality.optionTypes = {
   lineColor: '#555',
   lineWidth: 2,
   surfaceColor: 'rgba(100, 100, 100, 0.5)',
-  type: '>',
+  type: false,
   variable: 'x',
   width: 1,
-  xPos: 0,
 };

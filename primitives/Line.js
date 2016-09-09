@@ -32,6 +32,6 @@ Line.optionTypes = {
   mouseenter: false,
   mouseleave: false,
   buffer: null,
-  lineDash: false,
+  lineDash: [],
   lineWidth: 2,
 };
