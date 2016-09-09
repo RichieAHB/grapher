@@ -7,7 +7,7 @@ export default class Scale extends Primitive {
   make() {
 
     const {settings, context} = this;
-    const {interval, intervalX, intervalY, showX, showY} = settings;
+    const {fontSize, interval, intervalX, intervalY, showX, showY} = settings;
     const {minX, maxX, minY, maxY} = context.visibleAxisRange;
 
     this.elements = [];
@@ -32,6 +32,7 @@ export default class Scale extends Primitive {
         }
 
         const text = new Text({
+          fontSize,
           offset: [0, -14],
         });
 
@@ -60,6 +61,7 @@ export default class Scale extends Primitive {
         }
 
         const text = new Text({
+          fontSize,
           offset: [-10, 0],
         });
 
@@ -71,6 +73,7 @@ export default class Scale extends Primitive {
 
     if (showX || showY) {
       const text = new Text({
+        fontSize,
         offset: [-10, -14],
       });
 
@@ -82,6 +85,7 @@ export default class Scale extends Primitive {
 }
 
 Scale.optionTypes = {
+  fontSize: 14,
   interval: 1,
   intervalX: null,
   intervalY: null,
