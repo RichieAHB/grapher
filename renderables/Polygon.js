@@ -14,5 +14,4 @@ export default class Polygon extends Renderable {
 
 Polygon.optionTypes = {
   color: '#333',
-  sizeInPx: false,
 };
