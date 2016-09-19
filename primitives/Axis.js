@@ -87,19 +87,19 @@ export default class Axis extends Primitive {
       const yMap = SpriteUtils.createArrowMap(size, 0, strokeColor);
 
       const xAxisArrow = new Sprite({
-        height: xMap.height,
+        height: size * 2,
         map: xMap,
-        origin: new Vector2(xMap.width / 2, xMap.height / 2),
-        width: xMap.width,
+        origin: new Vector2(size, size),
+        width: size * 2,
       });
 
       xAxisArrow.addPoint(xAxisMax);
 
       const yAxisArrow = new Sprite({
-        height: yMap.height,
+        height: size * 2,
         map: yMap,
-        origin: new Vector2(yMap.width / 2, yMap.height / 2),
-        width: yMap.width,
+        origin: new Vector2(size, size),
+        width: size * 2,
       });
 
       yAxisArrow.addPoint(yAxisMax);

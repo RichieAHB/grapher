@@ -62,9 +62,9 @@ export function createPointSprite(radius, color) {
   const pointMap = createPointMap(radius, color);
 
   return new Sprite({
-    height: pointMap.height,
+    height: radius * 2,
     map: pointMap,
     origin: new Vector2(pointMap.width / 2, pointMap.height / 2),
-    width: pointMap.width,
+    width: radius * 2,
   });
 }

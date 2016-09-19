@@ -144,9 +144,21 @@ export default class CanvasRenderer {
     ctx.fill();
   }
 
-  _renderSprite(polygon, scaleX, scaleY, center) {
+  _renderSprite(sprite, scaleX, scaleY, center) {
+    const map = sprite.settings.map;
+
+    if (map.complete && map.naturalHeight !== 0) {
+      this._actuallyRenderSprite(sprite, scaleX, scaleY, center);
+    } else {
+      map.addEventListener('load', () => this._actuallyRenderSprite(sprite, scaleX, scaleY, center));
+    }
+
+
+  }
+
+  _actuallyRenderSprite(sprite, scaleX, scaleY, center) {
     const {canvas, ctx} = this;
-    const {points, settings} = polygon;
+    const {points, settings} = sprite;
     const {height, map, origin, width} = settings;
 
     for (let i = 0; i < points.length; i++) {
@@ -155,7 +167,9 @@ export default class CanvasRenderer {
         .scale(scaleX, -scaleY)
         .subtract(origin);
 
-      ctx.drawImage(map, point.x, point.y, width, height);
+        // Math.floor for safari bug not rendering when width and height are
+        // outside the bounds of the source image
+        ctx.drawImage(map, point.x, point.y, height, width);
     }
   }
 
