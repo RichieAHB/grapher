@@ -6,7 +6,6 @@ let id = 1;
 export default class Primitive {
 
   constructor(context, options = {}) {
-
     // The context for the Grapher
     this.context = context;
 
@@ -19,11 +18,13 @@ export default class Primitive {
 
     // If there is no buffer (and the primitive needs one) then assume the
     // buffer options have been passed here, this may cause issues!
-    if (this.constructor.optionTypes.hasOwnProperty('buffer') && !this.settings.buffer) {
+    if ({}.hasOwnProperty.call(this.constructor.optionTypes, 'buffer') && !this.settings.buffer) {
       this.settings.buffer = this.context.primitiveFactory.make('Buffer', this.settings);
     }
 
-    this._id = this.settings.id || id++;
+    id += 1;
+
+    this._id = this.settings.id || id;
 
     this.events = new EventEmitter();
 
@@ -42,7 +43,7 @@ export default class Primitive {
     this.make();
   }
 
-  update(options, exprTime) {
+  update(options) {
     // Update the settings
     this.settings = Object.assign({}, this.settings, options);
 

@@ -8,17 +8,16 @@ import Vector2 from '../math/Vector2';
 export default class Inequality extends Primitive {
 
   make() {
-
-    const {settings, context} = this;
-    const {lineColor, lineWidth, expr, surfaceColor, type, variable, width} = settings;
-    const {minX, maxX, minY, maxY} = context.visibleAxisRange;
+    const { settings, context } = this;
+    const { lineColor, lineWidth, expr, surfaceColor, type, variable, width } = settings;
+    const { minX, maxX, minY, maxY } = context.visibleAxisRange;
 
     if (!type) {
-      return false;
+      return;
     }
 
     const buffer = context.primitiveFactory.make('buffer', {
-      expr: expr,
+      expr,
       transpose: variable === 'y',
       width,
     });
@@ -44,8 +43,8 @@ export default class Inequality extends Primitive {
     });
 
     for (let i = 0; i < data.length; i += 2) {
-      polygon.addPoint(new Vector2(data[i], data[i+1]));
-      line.addPoint(new Vector2(data[i], data[i+1]));
+      polygon.addPoint(new Vector2(data[i], data[i + 1]));
+      line.addPoint(new Vector2(data[i], data[i + 1]));
     }
 
     let corner1;
@@ -72,6 +71,9 @@ export default class Inequality extends Primitive {
           corner2 = new Vector2(minX, minY);
         }
         break;
+      default:
+        console.warn('Inequality not recognised');
+        return;
     }
 
     polygon.addPoint(corner1);

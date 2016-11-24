@@ -16,25 +16,25 @@ export default class Buffer extends Optionable {
   }
 
   _build(oldSettings = {}, lerpFactor) {
-    const {width, minX, maxX, expr, fillWidth, transpose} = this.settings;
+    const { width, minX, maxX, expr, fillWidth, transpose } = this.settings;
     const vAR = this.context.visibleAxisRange;
 
     const _minX = fillWidth ? vAR.minX : minX;
     const _maxX = fillWidth ? vAR.maxX : maxX;
 
-    for (let i = 0; i < width; i++) {
+    for (let i = 0; i < width; i += 1) {
       const factor = width - 1 > 0 ? i / (width - 1) : 0.5;
 
       const x = lerp(_minX, _maxX, factor);
-      let   y = expr(x);
+      let y = expr(x);
 
       if (oldSettings.expr) {
         const y0 = oldSettings.expr(x);
         y = lerp(y0, y, lerpFactor);
       }
 
-      this.data[i * 2]     = transpose ? y : x;
-      this.data[i * 2 + 1] = transpose ? x : y;
+      this.data[i * 2] = transpose ? y : x;
+      this.data[(i * 2) + 1] = transpose ? x : y;
     }
   }
 }

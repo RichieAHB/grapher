@@ -9,10 +9,9 @@ import * as SpriteUtils from '../utils/SpriteUtils';
 export default class Axis extends Primitive {
 
   make() {
-
-    const {settings, context} = this;
-    const {strokeColor, lineWidth, showX, showY, xLabel, yLabel, arrows} = settings;
-    const {minX, maxX, minY, maxY} = context.visibleAxisRange;
+    const { settings, context } = this;
+    const { strokeColor, lineWidth, showX, showY, xLabel, yLabel, arrows } = settings;
+    const { minX, maxX, minY, maxY } = context.visibleAxisRange;
 
     this.elements = [];
 
@@ -20,7 +19,6 @@ export default class Axis extends Primitive {
     const yAxisMax = new Vector2(0, maxY);
 
     if (showX) {
-
       const xAxis = new Line({
         color: strokeColor,
         width: lineWidth,
@@ -31,11 +29,9 @@ export default class Axis extends Primitive {
       xAxis.addPoint(xAxisMax);
 
       this.elements.push(xAxis);
-
     }
 
     if (showY) {
-
       const yAxis = new Line({
         color: strokeColor,
         width: lineWidth,
@@ -48,7 +44,6 @@ export default class Axis extends Primitive {
     }
 
     if (xLabel && showX) {
-
       const _xLabel = xLabel === 'x' ? '𝑥' : xLabel;
 
       const xAxisLabel = new Text({
@@ -64,7 +59,6 @@ export default class Axis extends Primitive {
     }
 
     if (yLabel && showY) {
-
       const _yLabel = yLabel === 'y' ? '𝑦' : yLabel;
 
       const yAxisLabel = new Text({
@@ -80,7 +74,6 @@ export default class Axis extends Primitive {
     }
 
     if (arrows) {
-
       const size = 10;
 
       const xMap = SpriteUtils.createArrowMap(size, 90, strokeColor);

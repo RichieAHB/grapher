@@ -5,10 +5,9 @@ import Vector2 from '../math/Vector2';
 export default class Circles extends Primitive {
 
   make() {
-
-    const {settings, context} = this;
-    const {color, radius, lineWidth, buffer} = settings;
-    const {data} = buffer._buffer;
+    const { settings } = this;
+    const { color, radius, lineWidth, buffer } = settings;
+    const { data } = buffer._buffer;
 
     this.elements = [];
 
@@ -19,7 +18,7 @@ export default class Circles extends Primitive {
     });
 
     for (let i = 0; i < data.length; i += 2) {
-      circle.addPoint(new Vector2(data[i], data[i+1]));
+      circle.addPoint(new Vector2(data[i], data[i + 1]));
     }
 
     this.elements.push(circle);

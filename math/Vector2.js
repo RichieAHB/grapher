@@ -17,15 +17,14 @@ export default class Vector2 {
   }
 
   rotateAround(v, a) {
-
     const cosa = Math.cos(a);
     const sina = Math.sin(a);
 
     const x = this.x - v.x;
     const y = this.y - v.y;
 
-    const x1 = (x * cosa) - (y * sina) + v.x;
-    const y1 = (x * sina) + (y * cosa) + v.y;
+    const x1 = ((x * cosa) - (y * sina)) + v.x;
+    const y1 = ((x * sina) + (y * cosa)) + v.y;
 
     return new Vector2(x1, y1);
   }

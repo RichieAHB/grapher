@@ -6,7 +6,6 @@ import * as ScaleUtils from './utils/ScaleUtils';
 
 export default class Context {
   constructor(options) {
-
     this.wrapper = options.wrapper;
     this.startRange = options.startRange;
     this.zoomEnabled = options.zoomEnabled;

@@ -5,10 +5,9 @@ import Vector2 from '../math/Vector2';
 export default class Grid extends Primitive {
 
   make() {
-
-    const {settings, context} = this;
-    const {lineWidth, interval, intervalX, intervalY, strokeColor} = settings;
-    const {minX, maxX, minY, maxY} = context.visibleAxisRange;
+    const { settings, context } = this;
+    const { lineWidth, interval, intervalX, intervalY, strokeColor } = settings;
+    const { minX, maxX, minY, maxY } = context.visibleAxisRange;
 
     this.elements = [];
 
@@ -18,11 +17,10 @@ export default class Grid extends Primitive {
     const intX = intervalX || interval;
 
     // Make sure it falls on the interval
-    minXLine = minXLine - (minXLine % intX);
-    maxXLine = maxXLine - (maxXLine % intX);
+    minXLine -= minXLine % intX;
+    maxXLine -= maxXLine % intX;
 
     for (let x = minXLine; x <= maxXLine; x += intX) {
-
       const line = new Line({
         color: strokeColor,
         width: lineWidth,
@@ -39,11 +37,10 @@ export default class Grid extends Primitive {
 
     const intY = intervalY || interval;
 
-    minYLine = minYLine - (minYLine % intY);
-    maxYLine = maxYLine - (maxYLine % intY);
+    minYLine -= minYLine % intY;
+    maxYLine -= maxYLine % intY;
 
     for (let y = minYLine; y <= maxYLine; y += intY) {
-
       const line = new Line({
         color: strokeColor,
         width: lineWidth,

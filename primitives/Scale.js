@@ -5,15 +5,13 @@ import Vector2 from '../math/Vector2';
 export default class Scale extends Primitive {
 
   make() {
-
-    const {settings, context} = this;
-    const {fontSize, interval, intervalX, intervalY, showX, showY} = settings;
-    const {minX, maxX, minY, maxY} = context.visibleAxisRange;
+    const { settings, context } = this;
+    const { fontSize, interval, intervalX, intervalY, showX, showY } = settings;
+    const { minX, maxX, minY, maxY } = context.visibleAxisRange;
 
     this.elements = [];
 
     if (showX) {
-
       const intX = intervalX || interval;
 
       let minXLine = Math.ceil(minX + intX) - intX;
@@ -23,27 +21,24 @@ export default class Scale extends Primitive {
       maxXLine += -(Math.round(maxX) === maxXLine);
 
       // Make sure it falls on the interval
-      minXLine = minXLine - (minXLine % intX);
-      maxXLine = maxXLine - (maxXLine % intX);
+      minXLine -= minXLine % intX;
+      maxXLine -= maxXLine % intX;
 
       for (let x = minXLine; x <= maxXLine; x += intX) {
-        if (x === 0) {
-          continue;
+        if (x !== 0) {
+          const text = new Text({
+            fontSize,
+            offset: [0, -14],
+          });
+
+          text.addPoint(x, new Vector2(x, 0));
+
+          this.elements.push(text);
         }
-
-        const text = new Text({
-          fontSize,
-          offset: [0, -14],
-        });
-
-        text.addPoint(x, new Vector2(x, 0));
-
-        this.elements.push(text);
       }
     }
 
     if (showY) {
-
       const intY = intervalY || interval;
 
       let minYLine = Math.ceil(minY + intY) - intY;
@@ -52,22 +47,20 @@ export default class Scale extends Primitive {
       minYLine += +(Math.round(minY) === minYLine);
       maxYLine += -(Math.round(maxY) === maxYLine);
 
-      minYLine = minYLine - (minYLine % intY);
-      maxYLine = maxYLine - (maxYLine % intY);
+      minYLine -= minYLine % intY;
+      maxYLine -= maxYLine % intY;
 
       for (let y = minYLine; y <= maxYLine; y += intY) {
-        if (y === 0) {
-          continue;
+        if (y !== 0) {
+          const text = new Text({
+            fontSize,
+            offset: [-10, 0],
+          });
+
+          text.addPoint(y, new Vector2(0, y));
+
+          this.elements.push(text);
         }
-
-        const text = new Text({
-          fontSize,
-          offset: [-10, 0],
-        });
-
-        text.addPoint(y, new Vector2(0, y));
-
-        this.elements.push(text);
       }
     }
 
