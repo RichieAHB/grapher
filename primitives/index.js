@@ -9,6 +9,8 @@ import Normal from './Normal';
 import Label from './Label';
 import Circles from './Circles';
 import Inequality from './Inequality';
+import Integral from './Integral';
+import Sprite from './Sprite';
 
 /*
  * A primitive is an element that you can add to the grapher
@@ -26,4 +28,6 @@ export {
   Label,
   Circles,
   Inequality,
+  Integral,
+  Sprite,
 };

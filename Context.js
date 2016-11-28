@@ -21,6 +21,7 @@ export default class Context {
     this.primitiveFactory = new PrimitiveFactory(this);
 
     this.renderer = new CanvasRenderer(this.wrapper);
+    this.compositionRenderer = new CanvasRenderer();
     this.interactionRenderer = new CanvasRenderer();
 
     this.mousePos = new Vector2(-1, -1);

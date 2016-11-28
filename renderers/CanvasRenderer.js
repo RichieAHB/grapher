@@ -4,6 +4,7 @@ import Text from '../renderables/Text';
 import Polygon from '../renderables/Polygon';
 import Sprite from '../renderables/Sprite';
 import Circle from '../renderables/Circle';
+import { canvasToImage } from '../utils/CanvasUtils';
 
 export default class CanvasRenderer {
 
@@ -153,7 +154,7 @@ export default class CanvasRenderer {
   _renderSprite(sprite, scaleX, scaleY, center) {
     const map = sprite.settings.map;
 
-    if (map.complete && map.naturalHeight !== 0) {
+    if (map.nodeName === 'CANVAS' || (map.complete && map.naturalHeight !== 0)) {
       this._actuallyRenderSprite(sprite, scaleX, scaleY, center);
     } else {
       map.addEventListener('load', () => this._actuallyRenderSprite(sprite, scaleX, scaleY, center));
@@ -173,7 +174,7 @@ export default class CanvasRenderer {
 
       // Math.floor for safari bug not rendering when width and height are
       // outside the bounds of the source image
-      ctx.drawImage(map, point.x, point.y, height, width);
+      ctx.drawImage(map, point.x, point.y, width, height);
     }
   }
 
@@ -209,5 +210,9 @@ export default class CanvasRenderer {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
+  }
+
+  toImage() {
+    return canvasToImage(this.canvas);
   }
 }

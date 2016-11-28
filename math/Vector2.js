@@ -33,3 +33,5 @@ export default class Vector2 {
     return `{${this.x}, ${this.y}}`;
   }
 }
+
+Vector2.fromArray = ([x, y]) => new Vector2(x, y);

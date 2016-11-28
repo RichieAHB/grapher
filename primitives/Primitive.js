@@ -22,12 +22,22 @@ export default class Primitive {
       this.settings.buffer = this.context.primitiveFactory.make('Buffer', this.settings);
     }
 
-    id += 1;
-
     this._id = this.settings.id || id;
+
+    id += 1;
 
     this.events = new EventEmitter();
 
+    this._addListeners();
+
+    // Init empty elements array
+    this.elements = [];
+
+    // Build all the elements
+    this.make();
+  }
+
+  _addListeners() {
     // Add a resize listener for remaking this when the grapher changes size
     // TODO: only do this for elements that cover the grapher
     this.context.events.listen('grapher:resize', this.make.bind(this));
@@ -35,12 +45,6 @@ export default class Primitive {
     if (this.settings.buffer) {
       this.settings.buffer.events.listen('update', this.make.bind(this));
     }
-
-    // Init empty elements array
-    this.elements = [];
-
-    // Build all the elements
-    this.make();
   }
 
   update(options) {

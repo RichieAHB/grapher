@@ -7,7 +7,7 @@ export default class Buffer extends Optionable {
     this.context = context;
 
     // If data has been passed in then use it
-    this.data = (this.settings.data || []).slice(0);
+    this.data = (this.settings.data || []).slice();
 
     // Don't build as data already exists!
     if (!this.data.length) {

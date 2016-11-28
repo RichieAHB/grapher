@@ -1,6 +1,5 @@
 import Primitive from './Primitive';
 import Line from '../renderables/Line';
-import Polygon from '../renderables/Polygon';
 import Text from '../renderables/Text';
 import Sprite from '../renderables/Sprite';
 import Vector2 from '../math/Vector2';

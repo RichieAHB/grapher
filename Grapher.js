@@ -8,6 +8,7 @@ export default class Grapher {
     this.context = new Context(settings);
 
     this.primitives = [];
+    this.intersectingPrimitives = {};
     this.buffers = [];
     this.hovered = {
       primitive: null,
@@ -29,7 +30,7 @@ export default class Grapher {
   }
 
   appendTo(node) {
-    node.appendChild(this.context.renderer.canvas);
+    node.appendChild(this.canvas);
     this._removeWrapperListeners();
     this.context.wrapper = node;
     this._addWrapperListeners();
@@ -37,7 +38,7 @@ export default class Grapher {
     this.frame();
   }
 
-  add(type, options) {
+  add(type, options, update = true) {
     const primitive = this.context.primitiveFactory.make(type, options);
 
     // Need a better way to do this
@@ -47,16 +48,40 @@ export default class Grapher {
       this._updateOnMouseMove = true;
     }
 
-    this.primitives.push(primitive);
-    this.primitives.sort((a, b) =>
-      ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
-    );
+    const groupId = primitive.settings.intersectionGroup;
 
-    if (!this.context.live) {
+    if (groupId) {
+      this.intersectingPrimitives[groupId] =
+        this.intersectingPrimitives[groupId] || {};
+      this.intersectingPrimitives[groupId].primitives =
+        this.intersectingPrimitives[groupId].primitives || [];
+      this.intersectingPrimitives[groupId].primitives.push(primitive);
+      this.intersectingPrimitives[groupId].zIndex = Math.max(
+        this.intersectingPrimitives[groupId].zIndex,
+        primitive.zIndex,
+      );
+    } else {
+      this.primitives.push(primitive);
+      this.primitives.sort((a, b) =>
+        ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
+      );
+    }
+
+    if (!this.context.live && update) {
       this.frame();
     }
 
     return primitive;
+  }
+
+  remove(primitive) {
+    const newPrimitives = [];
+    this.primitives.forEach((candidate) => {
+      if (candidate !== primitive) {
+        newPrimitives.push(candidate);
+      }
+    });
+    this.primitives = newPrimitives;
   }
 
   select(id) {
@@ -138,12 +163,16 @@ export default class Grapher {
     });
   }
 
-  _updateDimensions(init = false) {
+  updateDimensions(width, height) {
+    this._updateDimensions(false, width, height);
+  }
+
+  _updateDimensions(init = false, width = window.innerWidth, height = window.innerHeight) {
     const { wrapper, startRange, center } = this.context;
     const hasWrapper = wrapper;
 
-    const newWidth = this.context.width = hasWrapper ? wrapper.offsetWidth : window.innerWidth;
-    const newHeight = this.context.height = hasWrapper ? wrapper.offsetHeight : window.innerHeight;
+    const newWidth = this.context.width = hasWrapper ? wrapper.offsetWidth : width;
+    const newHeight = this.context.height = hasWrapper ? wrapper.offsetHeight : height;
 
     const [pxX, pxY] = this._getPxPerUnit();
 
@@ -178,16 +207,56 @@ export default class Grapher {
     }
   }
 
+  _createIntersectionSprites() {
+    const { compositionRenderer } = this.context;
+    const sprites = [];
+
+    Object.keys(this.intersectingPrimitives).forEach((key) => {
+      const { primitives, zIndex } = this.intersectingPrimitives[key];
+      compositionRenderer.clear();
+      compositionRenderer.ctx.globalCompositeOperation = 'source-over';
+
+      primitives.forEach((primitive, index) => {
+        if (index === 1) {
+          compositionRenderer.ctx.globalCompositeOperation = 'source-in';
+        }
+
+        primitive.elements.forEach((element) => {
+          const [pxX, pxY] = this._getPxPerUnit();
+          compositionRenderer.render(element, pxX, pxY, this.context.center);
+        });
+      });
+
+      const img = compositionRenderer.toImage();
+      const primitive = this.context.primitiveFactory.make('sprite', {
+        map: img,
+        fill: true,
+        zIndex,
+      });
+
+      sprites.push(primitive);
+    });
+
+    return sprites;
+  }
+
   frame() {
-    const { primitives, context } = this;
-    const { renderer, interactionRenderer, width, height, mousePos } = context;
+    const { context, primitives } = this;
+    const { renderer, interactionRenderer, compositionRenderer, width, height, mousePos } = context;
 
     context.clock = Date.now();
 
     renderer.resize(width, height);
-    renderer.clear();
-
     interactionRenderer.resize(width, height);
+    compositionRenderer.resize(width, height);
+
+    const _primitives = primitives.concat(this._createIntersectionSprites());
+
+    _primitives.sort((a, b) =>
+      ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
+    );
+
+    this.context.events.trigger('pre');
 
     const oldHovered = this.hovered;
     this.hovered = {
@@ -195,13 +264,16 @@ export default class Grapher {
       elementIndex: null,
     };
 
-    primitives.forEach((primitive) => {
+    renderer.clear();
+    _primitives.forEach((primitive) => {
       const { _id } = primitive;
 
       primitive.elements.forEach((element, i) => {
         const [pxX, pxY] = this._getPxPerUnit();
 
         renderer.render(element, pxX, pxY, this.context.center);
+
+        primitive.events.trigger('afterRender', [primitive]);
 
         // Hacky interaction check
         // check in different way!
@@ -270,9 +342,18 @@ export default class Grapher {
     }
   }
 
+  get canvas() {
+    return this.context.renderer.canvas;
+  }
+
+  get ctx() {
+    return this.context.renderer.ctx;
+  }
+
   destroy() {
-    const { canvas } = this.context.renderer;
-    canvas.parentNode.removeChild(canvas);
+    if (this.canvas.parentNode) {
+      this.canvas.parentNode.removeChild(this.canvas);
+    }
     this._removeListeners();
   }
 
@@ -294,6 +375,22 @@ export default class Grapher {
 
     return [Math.abs((width / (maxX - minX)) * zoom), Math.abs((height / (maxY - minY)) * zoom)];
     // return this.context.zoom * _baseScaleFactor;
+  }
+
+  toImage() {
+    return this.context.renderer.toImage();
+  }
+
+  listen(name, listener) {
+    this.context.events.listen(name, listener);
+  }
+
+  get width() {
+    return this.context.width;
+  }
+
+  get height() {
+    return this.context.height;
   }
 }
 
