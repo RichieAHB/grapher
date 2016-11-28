@@ -227,7 +227,7 @@ export default class Grapher {
         });
       });
 
-      const img = compositionRenderer.toImage();
+      const img = compositionRenderer.canvas;
       const primitive = this.context.primitiveFactory.make('sprite', {
         map: img,
         fill: true,
