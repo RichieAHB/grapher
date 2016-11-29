@@ -37,13 +37,14 @@ export function graph(evaluate) {
 
         const formula = params[key];
         const expr = evaluate(formula);
-        colorIndex += 1;
 
         grapher.add(type, {
           ...params,
           color: colors[colorIndex % 4], // override colors for closed shorttag variant
           expr,
         });
+
+        colorIndex += 1;
       }
     });
     return grapher;
