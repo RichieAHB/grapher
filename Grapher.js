@@ -252,9 +252,17 @@ export default class Grapher {
 
     const _primitives = primitives.concat(this._createIntersectionSprites());
 
-    _primitives.sort((a, b) =>
-      ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
-    );
+    _primitives.sort((a, b) => {
+      const aZ = a.settings.zIndex || 0;
+      const bZ = b.settings.zIndex || 0;
+      if (aZ > bZ) {
+        return 1;
+      }
+      if (aZ < bZ) {
+        return -1;
+      }
+      return 0;
+    });
 
     this.context.events.trigger('pre');
 

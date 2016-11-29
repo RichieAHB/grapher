@@ -33,7 +33,7 @@ export function createArrowMap(size, rotation, color) {
   ctx.fill();
   ctx.stroke();
 
-  return CanvasUtils.canvasToImage(canvas);
+  return canvas;
 }
 
 function createPointMap(radius, color) {
@@ -48,7 +48,7 @@ function createPointMap(radius, color) {
   ctx.fillStyle = color;
   ctx.fill();
 
-  return CanvasUtils.canvasToImage(canvas);
+  return canvas;
 }
 
 export function createPointSprite(radius, color) {
