@@ -43,9 +43,9 @@ export default class CanvasRenderer {
     return data;
   }
 
-  _renderLine(line, scaleX, scaleY, center) {
+  _renderLine(lineEl, scaleX, scaleY, center) {
     const { ctx } = this;
-    const { points, settings } = line;
+    const { points, settings } = lineEl;
     const { color, width, lineDash } = settings;
 
     ctx.save();
@@ -80,9 +80,9 @@ export default class CanvasRenderer {
     ctx.stroke();
   }
 
-  _renderText(text, scaleX, scaleY, center) {
+  _renderText(textEl, scaleX, scaleY, center) {
     const { ctx } = this;
-    const { points, settings } = text;
+    const { points, settings } = textEl;
     const {
       fontFamily,
       fontColor,
@@ -95,7 +95,7 @@ export default class CanvasRenderer {
     } = settings;
 
     for (let i = 0; i < points.length; i += 1) {
-      let { point } = points[i];
+      let { point, text } = points[i];
       point = point
         .subtract(center)
         .scale(scaleX, -scaleY)
@@ -126,9 +126,9 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderPolygon(polygon, scaleX, scaleY, center) {
+  _renderPolygon(polygonEl, scaleX, scaleY, center) {
     const { ctx } = this;
-    const { points, settings } = polygon;
+    const { points, settings } = polygonEl;
     const { color } = settings;
 
     ctx.fillStyle = color;
@@ -151,19 +151,19 @@ export default class CanvasRenderer {
     ctx.fill();
   }
 
-  _renderSprite(sprite, scaleX, scaleY, center) {
-    const map = sprite.settings.map;
+  _renderSprite(spriteEl, scaleX, scaleY, center) {
+    const map = spriteEl.settings.map;
 
     if (map.nodeName === 'CANVAS' || (map.complete && map.naturalHeight !== 0)) {
-      this._actuallyRenderSprite(sprite, scaleX, scaleY, center);
+      this._actuallyRenderSprite(spriteEl, scaleX, scaleY, center);
     } else {
-      map.addEventListener('load', () => this._actuallyRenderSprite(sprite, scaleX, scaleY, center));
+      map.addEventListener('load', () => this._actuallyRenderSprite(spriteEl, scaleX, scaleY, center));
     }
   }
 
-  _actuallyRenderSprite(sprite, scaleX, scaleY, center) {
+  _actuallyRenderSprite(spriteEl, scaleX, scaleY, center) {
     const { ctx } = this;
-    const { points, settings } = sprite;
+    const { points, settings } = spriteEl;
     const { height, map, origin, width } = settings;
 
     for (let i = 0; i < points.length; i += 1) {
@@ -178,9 +178,9 @@ export default class CanvasRenderer {
     }
   }
 
-  _renderCircle(point, scaleX, scaleY, center) {
+  _renderCircle(pointEl, scaleX, scaleY, center) {
     const { ctx } = this;
-    const { points, settings } = point;
+    const { points, settings } = pointEl;
     const { radius, color, lineWidth } = settings;
 
     for (let i = 0; i < points.length; i += 1) {
