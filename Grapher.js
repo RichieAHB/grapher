@@ -62,9 +62,10 @@ export default class Grapher {
       );
     } else {
       this.primitives.push(primitive);
-      this.primitives.sort((a, b) =>
-        ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
-      );
+      // Need to sort here and create composite primtives too?
+      // this.primitives.sort((a, b) =>
+      //   ((a.settings.zIndex || 0) > (b.settings.zIndex || 0) ? 1 : -1)
+      // );
     }
 
     if (!this.context.live && update) {
@@ -250,6 +251,8 @@ export default class Grapher {
     interactionRenderer.resize(width, height);
     compositionRenderer.resize(width, height);
 
+    // Need to move this to add()!
+
     const _primitives = primitives.concat(this._createIntersectionSprites());
 
     _primitives.sort((a, b) => {
@@ -263,6 +266,8 @@ export default class Grapher {
       }
       return 0;
     });
+
+    // end
 
     this.context.events.trigger('pre');
 
