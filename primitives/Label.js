@@ -41,5 +41,5 @@ Label.optionTypes = {
   buffer: null,
   color: '#555',
   text: null,
-  size: 5,
+  size: 16,
 };
