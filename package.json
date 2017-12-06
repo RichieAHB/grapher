@@ -1,0 +1,9 @@
+{
+  "name": "graphitas",
+  "version": "1.0.0",
+  "description": "A small JS library for graphing",
+  "main": "src/index.js",
+  "repository": "git@github.com:richieahb/grapher.git",
+  "author": "RichieAHB <richard.beddington@gmail.com>",
+  "license": "MIT"
+}
